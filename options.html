@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<title>Options - Geizhals bettermaker</title>
+		<link rel="stylesheet" type="text/css" href="jquery-ui-1.10.2.custom.min.css">
+		<style type="text/css">
+			#error {
+				font:bold 110% Verdana;
+				color: red;
+			}
+			input[type=text]:hover {
+				background-color:#f2f2f2;
+				border-color:#999999;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		<select name="usertabs" size="6" multiple>
+		</select>
+		<button id="tab_entfernen" type="button">Entfernen</button>
+		
+		<form>
+			<fieldset>
+				<legend>Bezugsart</legend>
+				<input type="radio" name="bezugsart" value="abholung" id="abholung" /><label for="abholung">Abholung</label><br>
+				<input type="radio" name="bezugsart" value="versand" id="versand" /><label for="versand">Versand</label><br>
+			</fieldset>
+			<fieldset style="display:none;">
+				<legend>Abholung in der Nähe von</legend>
+				<label for="abholadresse">Adresse</label>
+				<input type="text" name="abholadresse" id="abholadresse" />
+			</fieldset>
+			<fieldset style="display:none;">
+				<legend>Versand nach</legend>
+				<input type="radio" name="versandland" value="at" id="versand_at" /><label for="versand_at">Österreich</label><br>
+				<input type="radio" name="versandland" value="de" id="versand_de" /><label for="versand_de">Deutschland</label><br>
+			</fieldset>
+			<button id="tab_hinzufuegen" type="button">Hinzufügen</button>
+		</form>
+	</body>
+
+	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="jquery-ui-1.10.2.custom.min.js"></script>
+	<script type="text/javascript" src="options.js"></script>
+</html>
