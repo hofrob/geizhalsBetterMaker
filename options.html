@@ -3,9 +3,23 @@
 		<title>Options - Geizhals bettermaker</title>
 		<link rel="stylesheet" type="text/css" href="jquery-ui-1.10.2.custom.min.css">
 		<style type="text/css">
+			body {
+				width: 400px;
+				background-color: #293134;
+				color: #E0E2E4;
+				font: 100% arial;
+			}
 			#error {
-				font:bold 110% Verdana;
+				font:bold 100% Verdana;
 				color: red;
+			}
+			.lagernd {
+				background-color: #d0ffd0;
+				color: #000;
+			}
+			.kurzfristig {
+				background-color: #ffffd0;
+				color: #000;
 			}
 		</style>
 	</head>
@@ -18,19 +32,39 @@
 		
 		<form>
 			<fieldset>
+				<legend>Titel</legend>
+				<label for="tabname">Optional</label>
+				<input type="text" name="tabname" id="tabname" />
+			</fieldset>
+			<fieldset>
 				<legend>Bezugsart</legend>
 				<input type="radio" name="bezugsart" value="abholung" id="abholung" /><label for="abholung">Abholung</label><br>
 				<input type="radio" name="bezugsart" value="versand" id="versand" /><label for="versand">Versand</label><br>
 			</fieldset>
-			<fieldset style="display:none;">
+			<fieldset>
 				<legend>Abholung in der Nähe von</legend>
 				<label for="abholadresse">Adresse</label>
 				<input type="text" name="abholadresse" id="abholadresse" />
 			</fieldset>
-			<fieldset style="display:none;">
+			<fieldset>
 				<legend>Versand nach</legend>
 				<input type="radio" name="versandland" value="at" id="versand_at" /><label for="versand_at">Österreich</label><br>
 				<input type="radio" name="versandland" value="de" id="versand_de" /><label for="versand_de">Deutschland</label><br>
+			</fieldset>
+			<fieldset>
+				<legend>Verfügbarkeit</legend>
+				<div>
+					<input type="radio" name="verfuegbarkeit" value="beliebig" id="beliebig" />
+					<label for="beliebig">beliebige Verfügbarkeit</label>
+				</div>
+				<div class="lagernd">
+					<input type="radio" name="verfuegbarkeit" value="lagernd" id="lagernd" />
+					<label for="lagernd">lagernd beim Händler</label>
+				</div>
+				<div class="kurzfristig">
+					<input type="radio" name="verfuegbarkeit" value="kurzfristig" id="kurzfristig" />
+					<label for="kurzfristig">kurzfristig lieferbar (bis 4 Werktage)</label>
+				</div>
 			</fieldset>
 			<button id="tab_hinzufuegen" type="button">Hinzufügen</button>
 		</form>
