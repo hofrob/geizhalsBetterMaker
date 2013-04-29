@@ -80,7 +80,7 @@ $(function() {
 
 		chrome.storage.sync.get(null, function(syncStorage) {
 			var tabs = syncStorage['tabs'];
-			if(tabs.length >= 6)
+			if(tabs && tabs.length >= 6)
 				return;
 			tabs.push(newtab);
 			chrome.storage.sync.set({'tabs': tabs});
