@@ -38,6 +38,30 @@ function reset_form() {
 	$('#beliebig').prop('checked', true);
 }
 
+function check_required() {
+
+	var error = '';
+	var bezugsart = $('[name=bezugsart]:checked').val();
+
+	if(bezugsart == 'abholung' && !/\w/.test($('#abholadresse').val())) {
+		error = error.concat('Abholung/Adresse ');
+	} else if(bezugsart == 'versand' && !$('[name=versandland]:checked').val()) {
+		error = error.concat('Versand/Land ');
+	} else if(!bezugsart) {
+		error = error.concat('Bezugsart + Adresse/Land ');
+	}
+
+	if(!$('[name=verfuegbarkeit]:checked').val())
+		error = error.concat('Verfügbarkeit');
+
+	if(error) {
+		$('#error').html('Pflichtfelder: ' + error);
+		return false;
+	} else {
+		return true;
+	}
+}
+
 $(function() {
 	restore_options();
 
@@ -53,7 +77,11 @@ $(function() {
 
 	$('#tab_hinzufuegen').click(function() {
 
+		if(!check_required())
+			return;
+
 		var newtab;
+
 		if($('[name=bezugsart]:checked').val() == 'abholung') {
 			newtab = {
 				bezugsart: 'abholung',
@@ -80,8 +108,12 @@ $(function() {
 
 		chrome.storage.sync.get(null, function(syncStorage) {
 			var tabs = syncStorage['tabs'];
-			if(tabs && tabs.length >= 6)
+			if(!tabs)
+				tabs = [];
+
+			if(tabs.length >= 6)
 				return;
+
 			tabs.push(newtab);
 			chrome.storage.sync.set({'tabs': tabs});
 			restore_options();
