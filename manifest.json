@@ -4,7 +4,7 @@
 	"name": "Geizhals bettermaker",
 	"description": "Makes Geizhals at least 3 times as better(est)",
 	"version": "1.0",
-	
+
 	"options_page": "options.html",
 	"content_scripts": [{
 		"matches": [
@@ -12,7 +12,10 @@
 			"http://*.geizhals.de/*",
 			"http://*.geizhals.eu/*"
 		],
-		"css": ["jquery-ui-1.10.2.custom.min.css"],
+		"css": [
+			"jquery-ui-1.10.2.custom.min.css",
+			"ghbettermaker.css"
+		],
 		"js": ["jquery-1.9.1.min.js", "jquery-ui-1.10.2.custom.min.js", "tabs.js"]
 	}],
 	"permissions": [

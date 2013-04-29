@@ -1,6 +1,8 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
 	<head>
 		<title>Options - Geizhals bettermaker</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link rel="stylesheet" type="text/css" href="jquery-ui-1.10.2.custom.min.css">
 		<style type="text/css">
 			body {
@@ -21,20 +23,44 @@
 				background-color: #ffffd0;
 				color: #000;
 			}
+			select {
+				width: 400px;
+			}
+			legend + label {
+				width: 100px;
+				display: inline-block;
+			}
+			input[type="text"] {
+				width: 250px;
+			}
 		</style>
 	</head>
 
 	<body>
-		
+
 		<select name="usertabs" size="6" multiple>
 		</select>
-		<button id="tab_entfernen" type="button" disabled="disabled">Entfernen</button>
-		
+		<button id="tab_entfernen" type="button">Entfernen</button>
+		<button id="als_standard" type="button">Als Standard Tab</button>
+
 		<form>
 			<fieldset>
-				<legend>Titel</legend>
-				<label for="tabname">Optional</label>
-				<input type="text" name="tabname" id="tabname" />
+				<legend>Tab Infos</legend>
+				<label for="tabname">Titel</label>
+				<input type="text" name="tabname" id="tabname" placeholder="zB: Abh BÃ¼ro, Versand (optional)" />
+			</fieldset>
+			<fieldset id="verschoenern">
+				<legend>VerschÃ¶nerungen</legend>
+				<input type="checkbox" name="vkinfo_ausblenden" value="vkinfo_ausblenden" id="vkinfo_ausblenden" />
+				<label for="vkinfo_ausblenden">Versandkosteninfo in diesem Tab ausblenden</label><br/>
+				<input type="checkbox" name="info_agb_link_ausblenden" value="info_agb_link_ausblenden" id="info_agb_link_ausblenden" />
+				<label for="info_agb_link_ausblenden">Info&amp;AGB Link ausblenden</label><br/>
+				<input type="checkbox" name="preisfeld_ausmisten" value="preisfeld_ausmisten" id="preisfeld_ausmisten" />
+				<label for="preisfeld_ausmisten">Preisfeld ausmisten</label><br/>
+				<input type="checkbox" name="beschreibungstext_kuerzen" value="beschreibungstext_kuerzen" id="beschreibungstext_kuerzen" />
+				<label for="beschreibungstext_kuerzen">Beschreibungstext kÃ¼rzen</label><br/>
+				<input type="checkbox" name="bewertungsinfo_kuerzen" value="bewertungsinfo_kuerzen" id="bewertungsinfo_kuerzen" />
+				<label for="bewertungsinfo_kuerzen">Bewertungsinfo kÃ¼rzen</label>
 			</fieldset>
 			<fieldset>
 				<legend>Bezugsart</legend>
@@ -42,35 +68,38 @@
 				<input type="radio" name="bezugsart" value="versand" id="versand" /><label for="versand">Versand</label><br>
 			</fieldset>
 			<fieldset>
-				<legend>Abholung in der Nähe von</legend>
+				<legend>Abholung in der NÃ¤he von</legend>
 				<label for="abholadresse">Adresse</label>
-				<input type="text" name="abholadresse" id="abholadresse" />
+				<input type="text" name="abholadresse" id="abholadresse" placeholder="zB: PLZ oder Geokoordinaten " />
 			</fieldset>
 			<fieldset>
 				<legend>Versand nach</legend>
-				<input type="radio" name="versandland" value="at" id="versand_at" /><label for="versand_at">Österreich</label><br>
+				<input type="radio" name="versandland" value="at" id="versand_at" /><label for="versand_at">Ã–sterreich</label><br>
 				<input type="radio" name="versandland" value="de" id="versand_de" /><label for="versand_de">Deutschland</label><br>
 			</fieldset>
 			<fieldset>
-				<legend>Verfügbarkeit</legend>
+				<legend>VerfÃ¼gbarkeit</legend>
 				<div>
 					<input type="radio" name="verfuegbarkeit" value="beliebig" id="beliebig" />
-					<label for="beliebig">beliebige Verfügbarkeit</label>
+					<label for="beliebig">beliebige VerfÃ¼gbarkeit</label>
 				</div>
 				<div class="lagernd">
 					<input type="radio" name="verfuegbarkeit" value="lagernd" id="lagernd" />
-					<label for="lagernd">lagernd beim Händler</label>
+					<label for="lagernd">lagernd beim HÃ¤ndler</label>
 				</div>
 				<div class="kurzfristig">
 					<input type="radio" name="verfuegbarkeit" value="kurzfristig" id="kurzfristig" />
 					<label for="kurzfristig">kurzfristig lieferbar (bis 4 Werktage)</label>
 				</div>
 			</fieldset>
-			<button id="tab_hinzufuegen" type="button">Hinzufügen</button>
+			<button id="tab_hinzufuegen" type="button">HinzufÃ¼gen</button>
+			<div id="error">
+			</div>
 		</form>
+
+		<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="jquery-ui-1.10.2.custom.min.js"></script>
+		<script type="text/javascript" src="options.js"></script>
 	</body>
 
-	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" src="jquery-ui-1.10.2.custom.min.js"></script>
-	<script type="text/javascript" src="options.js"></script>
 </html>

@@ -1,7 +1,11 @@
 function restore_options() {
+	$('#error').html('');
 	$('[name=usertabs]').empty();
 	$('#tab_entfernen').prop('disabled', true);
+	$('#als_standard').prop('disabled', true);
 	chrome.storage.sync.get(null, function(syncStorage) {
+		console.log(syncStorage);
+
 		var tabs = syncStorage['tabs'];
 
 		if(tabs.length >= 6)
@@ -12,7 +16,13 @@ function restore_options() {
 		reset_form();
 
 		$(tabs).each(function(index, value) {
-			$('[name=usertabs]').append('<option value="' + index + '">' + value.tabname + '</option>');
+
+			if(value.als_standard)
+				text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
+			else
+				text = '<option value="' + index + '">' + value.tabname + '</option>';
+
+			$('[name=usertabs]').append(text);
 		});
 	});
 }
@@ -23,6 +33,7 @@ function reset_form() {
 	$('#abholadresse').val('');
 	$('#tabname').val('');
 	$('[name=versandland]').parent().prop('disabled', true).css('color', '#707070');
+	$('#verschoenern').find('[type=checkbox]').prop('checked', true);
 	$('[name=abholadresse]').parent().prop('disabled', true).css('color', '#707070');
 	$('[name=verfuegbarkeit]').prop('checked', false);
 	$('#beliebig').prop('checked', true);
@@ -57,6 +68,11 @@ $(function() {
 		}
 
 		newtab.verfuegbarkeit = $('[name=verfuegbarkeit]:checked').val();
+		$('#verschoenern > [type=checkbox]').each(function(index, value) {
+			var name = $(value).context.id;
+			newtab[name] = $(value).prop('checked');
+		});
+//		newtab.vkinfo_ausblenden = $('#vkinfo_ausblenden').prop('checked');
 
 		if(/\w+/i.test($('#tabname').val()))
 			newtab.tabname = $('#tabname').val();
@@ -76,8 +92,10 @@ $(function() {
 
 	$('#tab_entfernen').click(function() {
 		var tabs_loeschen = $('[name=usertabs]').val();
-		if(!tabs_loeschen)
+		if(!tabs_loeschen) {
+			$('#error').html('Bitte mindestens ein Tab aus der Liste wählen.');
 			return;
+		}
 
 		chrome.storage.sync.get(null, function(syncStorage) {
 			var tabs = syncStorage['tabs'];
@@ -89,10 +107,37 @@ $(function() {
 		});
 	});
 
+	$('#als_standard').click(function() {
+		var tab_als_standard = $('[name=usertabs]').val();
+
+		if(tab_als_standard.length != 1) {
+			$('#error').html('Bitte ein Tab aus der Liste wählen.');
+			return;
+		}
+
+		chrome.storage.sync.get(null, function(syncStorage) {
+			var tabs = syncStorage['tabs'];
+
+			for(var i = 0; i < tabs.length; i++) {
+				if(i == tab_als_standard[0]) {
+					tabs[i].als_standard = true;
+				} else {
+					tabs[i].als_standard = false;
+				}
+			}
+
+			chrome.storage.sync.set({'tabs': tabs});
+			restore_options();
+		});
+	});
+
 	$('[name=usertabs]').mouseup(function() {
-		if($('[name=usertabs]').val())
+		if($('[name=usertabs]').val()) {
 			$('#tab_entfernen').prop('disabled', false);
-		else
+			$('#als_standard').prop('disabled', false);
+		} else {
 			$('#tab_entfernen').prop('disabled', true);
+			$('#als_standard').prop('disabled', true);
+		}
 	});
 });
