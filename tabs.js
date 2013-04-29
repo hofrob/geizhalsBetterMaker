@@ -3,12 +3,14 @@ $(function () {
 	if(!/a\d+\.html/i.test(document.URL))
 		return;
 
-	$('#gh_afilterbox, #content_table, [name="filterbox"], #gh_content_wrapper > div.blaettern').wrapAll('<div id="allepreise" />');
-	$('#allepreise').wrapAll('<div id="pricetabs" />');
-	$('#pricetabs').prepend('<ul id="pricetabs_title"><li><a href="#allepreise">Alle Preise</a></li></ul>');
-
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
+                if(!tabs)
+                    return;
+
+		$('#gh_afilterbox, #content_table, [name="filterbox"], #gh_content_wrapper > div.blaettern').wrapAll('<div id="allepreise" />');
+		$('#allepreise').wrapAll('<div id="pricetabs" />');
+		$('#pricetabs').prepend('<ul id="pricetabs_title"><li><a href="#allepreise">Alle Preise</a></li></ul>');
 
 		for(var i = 0; i < tabs.length; i++) {
 			$('#pricetabs_title').append('<li id="pricetab' + i + '"><a href="#pricetab_content' + i + '">' + tabs[i].tabname + '</a></li>');

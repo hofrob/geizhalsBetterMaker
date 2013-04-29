@@ -4,11 +4,10 @@ function restore_options() {
 	$('#tab_entfernen').prop('disabled', true);
 	$('#als_standard').prop('disabled', true);
 	chrome.storage.sync.get(null, function(syncStorage) {
-		console.log(syncStorage);
 
 		var tabs = syncStorage['tabs'];
 
-		if(tabs.length >= 6)
+		if(tabs && tabs.length >= 6)
 			$('form > fieldset').prop('disabled', true).css('color', '#707070');
 		else
 			$('form > fieldset').prop('disabled', false).css('color', '#E0E2E4');
