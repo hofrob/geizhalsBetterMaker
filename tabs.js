@@ -1,6 +1,6 @@
 $(function () {
 
-	if(!/a\d+\.html/i.test(document.URL))
+	if(!/a\d+\.html/i.test(window.location.pathname))
 		return;
 
 	chrome.storage.sync.get(null, function(syncStorage) {

@@ -14,10 +14,26 @@
 		],
 		"css": [
 			"jquery-ui-1.10.2.custom.min.css",
-			"ghbettermaker.css"
+			"ghbettermaker.css",
+			"jquery.fancybox.css",
+			"jquery.fancybox-thumbs.css"
 		],
-		"js": ["jquery-1.9.1.min.js", "jquery-ui-1.10.2.custom.min.js", "tabs.js", "preisliste.js"]
+		"js": [
+			"jquery-1.9.1.min.js",
+			"jquery-ui-1.10.2.custom.min.js",
+			"tabs.js",
+			"preisliste.js",
+			"jquery.mousewheel-3.0.6.pack.js",
+			"jquery.fancybox.pack.js",
+			"jquery.fancybox-thumbs.js"
+		]
 	}],
+	"web_accessible_resources": [
+		"blank.gif",
+		"fancybox_sprite.png",
+		"fancybox_loading.gif",
+		"fancybox_overlay.png"
+	],
 	"permissions": [
 		"http://*.geizhals.at/*",
 		"http://*.geizhals.de/*",
