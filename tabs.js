@@ -5,8 +5,9 @@ $(function () {
 
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
-                if(!tabs)
-                    return;
+
+		if(!tabs)
+			return;
 
 		$('#gh_afilterbox, #content_table, [name="filterbox"], #gh_content_wrapper > div.blaettern').wrapAll('<div id="allepreise" />');
 		$('#allepreise').wrapAll('<div id="pricetabs" />');
@@ -81,7 +82,7 @@ $(function () {
 
 						if(tabs[i].bewertungsinfo_kuerzen)
 							$('#pricetab_content' + i).find('#content_table').find('tr').find('td:nth-child(3)').each(function(index, value) {
-								note = ' ' + value.innerText.replace(/\s*Note\:\s*|\s*Bewertungen/g, '').replace(/\n/, '/');
+								note = '<br>' + value.innerText.replace(/\s*Note\:\s*|\s*Bewertungen/g, '').replace(/\n/, '/');
 								$(value).find('a').first().append(note);
 								kurze_bewertung = $(value).find('a').first().clone();
 								$(value).empty();

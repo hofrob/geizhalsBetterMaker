@@ -23,6 +23,12 @@ function restore_options() {
 
 			$('[name=usertabs]').append(text);
 		});
+
+		var allgemein = syncStorage['allgemein'];
+		cb = Object.keys(allgemein);
+		for(var i=0; i < cb.length; i++) {
+			$('#' + cb[i]).prop('checked', allgemein[cb[i]]);
+		}
 	});
 }
 
@@ -75,6 +81,16 @@ $(function() {
 		}
 	});
 
+	$('#speichern').click(function() {
+		var allgemein = {},
+			cb = $('#allgemein > [type=checkbox]');
+
+		for(var i=0; i < cb.length; i++) {
+			allgemein[$(cb[i]).context.id] = $(cb).prop('checked');
+		}
+		chrome.storage.sync.set({'allgemein': allgemein});
+	});
+
 	$('#tab_hinzufuegen').click(function() {
 
 		if(!check_required())
@@ -95,11 +111,11 @@ $(function() {
 		}
 
 		newtab.verfuegbarkeit = $('[name=verfuegbarkeit]:checked').val();
-		$('#verschoenern > [type=checkbox]').each(function(index, value) {
-			var name = $(value).context.id;
-			newtab[name] = $(value).prop('checked');
-		});
-//		newtab.vkinfo_ausblenden = $('#vkinfo_ausblenden').prop('checked');
+
+		verschoenern = $('#verschoenern > [type=checkbox]');
+		for(var i = 0; i < verschoenern.length; i++) {
+			newtab[$(verschoenern[i]).context.id] = $(verschoenern[i]).prop('checked');
+		}
 
 		if(/\w+/i.test($('#tabname').val()))
 			newtab.tabname = $('#tabname').val();

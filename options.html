@@ -24,7 +24,7 @@
 				color: #000;
 			}
 			select {
-				width: 400px;
+				width: 100%;
 			}
 			legend + label {
 				width: 100px;
@@ -37,14 +37,21 @@
 	</head>
 
 	<body>
-
-		<select name="usertabs" size="6" multiple>
-		</select>
-		<button id="tab_entfernen" type="button">Entfernen</button>
-		<button id="als_standard" type="button">Als Standard Tab</button>
-
+		<form style="display: none;">
+			<fieldset id="allgemein">
+				<legend>Allgemeine Einstellungen</legend>
+				<input type="checkbox" name="bilder_gallerie" value="bilder_gallerie" id="bilder_gallerie" />
+				<label for="bilder_gallerie">Bildergallerie</label><br/>
+			</fieldset>
+			<button id="speichern" type="button">Speichern</button>
+		</form>
 		<form>
 			<fieldset>
+				<select name="usertabs" size="6" multiple>
+				</select>
+				<button id="tab_entfernen" type="button">Entfernen</button>
+				<button id="als_standard" type="button">Als Standard Tab</button>
+
 				<legend>Tab Infos</legend>
 				<label for="tabname">Titel</label>
 				<input type="text" name="tabname" id="tabname" placeholder="zB: Abh Büro, Versand (optional)" />
@@ -58,9 +65,9 @@
 				<input type="checkbox" name="preisfeld_ausmisten" value="preisfeld_ausmisten" id="preisfeld_ausmisten" />
 				<label for="preisfeld_ausmisten">Preisfeld ausmisten</label><br/>
 				<input type="checkbox" name="beschreibungstext_kuerzen" value="beschreibungstext_kuerzen" id="beschreibungstext_kuerzen" />
-				<label for="beschreibungstext_kuerzen">Beschreibungstext kürzen</label><br/>
+				<label for="beschreibungstext_kuerzen">Beschreibungstext kürzen und Gütesiegel ausblenden</label><br/>
 				<input type="checkbox" name="bewertungsinfo_kuerzen" value="bewertungsinfo_kuerzen" id="bewertungsinfo_kuerzen" />
-				<label for="bewertungsinfo_kuerzen">Bewertungsinfo kürzen</label>
+				<label for="bewertungsinfo_kuerzen">Bewertungsinfo kürzen</label><br/>
 			</fieldset>
 			<fieldset>
 				<legend>Bezugsart</legend>
