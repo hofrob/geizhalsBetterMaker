@@ -38,7 +38,7 @@ function reset_form() {
 	$('#abholadresse').val('');
 	$('#tabname').val('');
 	$('[name=versandland]').parent().prop('disabled', true).css('color', '#707070');
-	$('#verschoenern').find('[type=checkbox]').prop('checked', true);
+	$('#verschoenern [type=checkbox]').prop('checked', true);
 	$('[name=abholadresse]').parent().prop('disabled', true).css('color', '#707070');
 	$('[name=verfuegbarkeit]').prop('checked', false);
 	$('#beliebig').prop('checked', true);

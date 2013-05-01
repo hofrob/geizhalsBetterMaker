@@ -31,7 +31,7 @@ $(function() {
 					});
 					$('#gh_proddesc_right').hide();
 					$('#gh_proddesc_right').before(gallery);
-					$('#ghgallery').find('img').first().show();
+					$('#ghgallery img').first().show();
 					$('.fancybox').fancybox({
 						helpers : {
 							thumbs: {

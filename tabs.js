@@ -25,7 +25,7 @@ $(function () {
 
 				var i = $('#pricetabs').tabs("option", "active") - 1;
 
-				if($('#pricetab_content' + i).find('#content_table').length > 0 || i < 0)
+				if($('#pricetab_content' + i + '#content_table').length > 0 || i < 0)
 					return;
 
 				var data = {
@@ -56,10 +56,10 @@ $(function () {
 								appendTo('#pricetab_content' + i);
 
 						if(tabs[i].vkinfo_ausblenden)
-							$('#pricetab_content' + i).find('div.vk_inl').remove();
+							$('#pricetab_content' + i + ' div.vk_inl').remove();
 
 						if(tabs[i].beschreibungstext_kuerzen)
-							$('#pricetab_content' + i).find('.ty2').each(function(index, value) {
+							$('#pricetab_content' + i + ' .ty2').each(function(index, value) {
 								beschreibungstext = $(value).html();
 								var beschreibung_haendler = beschreibungstext.split("<p>")[0];
 								beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
@@ -67,10 +67,10 @@ $(function () {
 							});
 
 						if(tabs[i].info_agb_link_ausblenden)
-							$('#pricetab_content' + i).find('div.gh_hl1').remove();
+							$('#pricetab_content' + i + ' div.gh_hl1').remove();
 
 						if(tabs[i].preisfeld_ausmisten)
-							$('#pricetab_content' + i).find('#content_table').find('tr').find('td:first').each(function(index, value) {
+							$('#pricetab_content' + i + ' #content_table tr').find('td:first').each(function(index, value) {
 								var preis = $(value).find('span.price').clone();
 								var kkimg = $(value).find('p').last().clone();
 								$(value).empty();
@@ -81,7 +81,7 @@ $(function () {
 							});
 
 						if(tabs[i].bewertungsinfo_kuerzen)
-							$('#pricetab_content' + i).find('#content_table').find('tr').find('td:nth-child(3)').each(function(index, value) {
+							$('#pricetab_content0 #content_table tr td:nth-child(3)').each(function(index, value) {
 								note = '<br>' + value.innerText.replace(/\s*Note\:\s*|\s*Bewertungen/g, '').replace(/\n/, '/');
 								$(value).find('a').first().append(note);
 								kurze_bewertung = $(value).find('a').first().clone();
