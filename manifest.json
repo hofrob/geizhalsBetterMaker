@@ -21,11 +21,11 @@
 		"js": [
 			"jquery-1.9.1.min.js",
 			"jquery-ui-1.10.2.custom.min.js",
-			"tabs.js",
-			"preisliste.js",
-			"jquery.mousewheel-3.0.6.pack.js",
 			"jquery.fancybox.pack.js",
-			"jquery.fancybox-thumbs.js"
+			"jquery.mousewheel-3.0.6.pack.js",
+			"jquery.fancybox-thumbs.js",
+			"tabs.js",
+			"preisliste.js"
 		]
 	}],
 	"web_accessible_resources": [

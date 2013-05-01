@@ -55,10 +55,10 @@ $(function() {
 				gallery.css('float', 'left');
 				var a = $(document.createElement('a'));
 				a.addClass('fancybox');
-				a.attr('href', $('#img_container').find('img').attr('src'));
+				a.attr('href', $('#img_wrapper').find('img').attr('src'));
 				a.attr('data-fancybox-group', 'gallery');
 				var img = $(document.createElement('img'));
-				img.attr('src', $('#img_container').find('img').attr('src'));
+				img.attr('src', $('#img_wrapper').find('img').attr('src'));
 				img.css('max-height', '150px');
 				a.append(img);
 				gallery.append(a);

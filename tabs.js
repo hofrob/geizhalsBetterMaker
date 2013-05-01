@@ -25,7 +25,7 @@ $(function () {
 
 				var i = $('#pricetabs').tabs("option", "active") - 1;
 
-				if($('#pricetab_content' + i + '#content_table').length > 0 || i < 0)
+				if($('#pricetab_content' + i + ' #content_table').length > 0 || i < 0)
 					return;
 
 				var data = {
@@ -74,8 +74,10 @@ $(function () {
 
 						if(tabs[i].preisfeld_ausmisten)
 							$('#pricetab_content' + i + ' #content_table tr').find('td:first').each(function(index, value) {
+
 								if($(value).attr('colspan') == 5)
 									return;
+
 								var preis = $(value).find('span.price').clone();
 								var kkimg = $(value).find('p').last().clone();
 								$(value).empty();
