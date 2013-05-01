@@ -82,6 +82,9 @@ $(function() {
 	});
 
 	$('#speichern').click(function() {
+
+		chrome.storage.sync.remove('allgemein');
+
 		var allgemein = {},
 			cb = $('#allgemein > [type=checkbox]');
 
