@@ -72,16 +72,40 @@ $(function() {
 						}
 					}
 				});
+			} else if($('#gh_proddesc_right div.nopic').length) {
+
+				var div_bepixelung = $(document.createElement('div'));
+				div_bepixelung.html('Hast du ein Bild? ');
+				div_bepixelung.append($('#gh_proddesc_right div.nopic a').first());
+
+				var div_googleimage = $(document.createElement('div'));
+				div_googleimage.html('Oder suche nach einem Bild auf ');
+				var a = $(document.createElement('a'));
+				a.attr({
+					href: 'https://www.google.com/search?tbm=isch&tbs=itp:photo&q=' + encodeURIComponent($('h1 span').html()),
+					target: '_blank'
+				});
+				a.html('Google!');
+				div_googleimage.append(a);
+
+				$('#gh_proddesc_right div.nopic').empty();
+				$('#gh_proddesc_right div.nopic').append(div_bepixelung, div_googleimage);
+
 			}
 		}
 
+//		$('#gh_proddesc').css('width', '600px');
 		var diverse_infos = $(document.createElement('div'));
 		diverse_infos.hide();
 		diverse_infos.attr('id', 'diverse_infos');
 		diverse_infos.css('float', 'left');
+		diverse_infos.css('width', '500px');
 		diverse_infos.append($('#gh_proddesc p'));
 		diverse_infos.append($('#gh_prod_misc_controls'));
 		diverse_infos.append($('#gh_artstuff'));
+		diverse_infos.css('height', '200px');
+		diverse_infos.css('overflow', 'auto');
+		diverse_infos.css('width', '600px');
 		$('#gh_artbox').append(diverse_infos);
 
 		var toggle_diverse_infos = $(document.createElement('div'));
@@ -106,5 +130,21 @@ $(function() {
 
 		if($('#gh_proddesc span').is(':empty'))
 			$('#gh_proddesc').remove();
+
+		$('#gh_proddesc').css('max-width', '500px').parent().css('max-width', '500px');
+		tooltip_anhaengen('#gh_proddesc', function(value) {
+			value = value.first();
+			value.html(value.text().replace(/•[^•]*?k\.A\.[^•]*/g, ''));
+			console.log(value.html());
+			return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
+		});
+
+		$(document).tooltip({
+				track: true,
+				items: '.tooltip',
+				content: function() {
+					return $(this).find('div.original_content').html();
+				}
+		});
 	});
 });

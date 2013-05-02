@@ -19,11 +19,12 @@
 			"jquery.fancybox-thumbs.css"
 		],
 		"js": [
-			"jquery-1.9.1.min.js",
+			"jquery-2.0.0.min.js",
 			"jquery-ui-1.10.2.custom.min.js",
 			"jquery.fancybox.pack.js",
 			"jquery.mousewheel-3.0.6.pack.js",
 			"jquery.fancybox-thumbs.js",
+			"main.js",
 			"tabs.js",
 			"preisliste.js"
 		]

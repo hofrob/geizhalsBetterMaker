@@ -58,15 +58,22 @@ $(function () {
 						if(tabs[i].filterbox_ausblenden)
 							$('#pricetab_content' + i + ' #gh_afilterbox').hide();
 
-						if(tabs[i].vkinfo_ausblenden)
-							$('#pricetab_content' + i + ' div.vk_inl').remove();
+						if(tabs[i].vkinfo_ausblenden) {
+							$('#pricetab_content' + i + ' div.vk_inl').each(function(index, value) {
+								tooltip_anhaengen(value, function(value) {
+									return 'Versandkosten';
+								});
+							});
+						}
 
 						if(tabs[i].beschreibungstext_kuerzen)
 							$('#pricetab_content' + i + ' .ty2').each(function(index, value) {
-								beschreibungstext = $(value).html();
-								var beschreibung_haendler = beschreibungstext.split("<p>")[0];
-								beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
-								$(value).html(beschreibung_haendler + '<br>' + $(value).find('p b')[0].innerHTML);
+								tooltip_anhaengen(value, function(value) {
+									beschreibungstext = value.html();
+									var beschreibung_haendler = beschreibungstext.split("<p>")[0];
+									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
+									return beschreibung_haendler + '<br>' + value.find('p b')[0].innerHTML;
+								});
 							});
 
 						if(tabs[i].info_agb_link_ausblenden)
@@ -74,17 +81,20 @@ $(function () {
 
 						if(tabs[i].preisfeld_ausmisten)
 							$('#pricetab_content' + i + ' #content_table tr').find('td:first').each(function(index, value) {
+								tooltip_anhaengen(value, function(value) {
+									value.attr('title', value.text());
 
-								if($(value).attr('colspan') == 5)
-									return;
+									if(value.attr('colspan') == 5)
+										return;
 
-								var preis = $(value).find('span.price').clone();
-								var kkimg = $(value).find('p').last().clone();
-								$(value).empty();
-								if(kkimg.length == 0 || /MwSt/.test(kkimg[0].innerText))
-									$(value).append(preis);
-								else
-									$(value).append(preis, kkimg);
+									var preis = value.find('span.price').clone();
+									var kkimg = value.find('p').last().clone();
+									value.empty();
+									if(kkimg.length == 0 || /MwSt/.test(kkimg[0].innerText))
+										return preis[0].outerHTML;
+									else
+										return preis[0].outerHTML + ' ' + kkimg[0].outerHTML;
+								});
 							});
 
 						if(tabs[i].bewertungsinfo_kuerzen)
@@ -102,13 +112,39 @@ $(function () {
 								$(value).append(kurze_bewertung);
 							});
 
-						$('#pricetab_content1 #content_table tr td:nth-child(2)').each(function(index, value) {
-							var flagge = $(value).find('img:first').clone();
-							var haendlerlink = $(value).find('a').clone();
-							$(value).empty();
-							$(value).append(flagge, haendlerlink);
-						});
+						if(tabs[i].lagerstand_kuerzen) {
+							$('#pricetab_content' + i + ' #content_table .av_inl').css('height', 'auto');
+							$('#pricetab_content' + i + ' #content_table div.av_l').each(function(index, value) {
+								tooltip_anhaengen(value, function(value) {
+									return 'lagernd';
+								});
+							});
+							$('#pricetab_content' + i + ' #content_table div.av_k').each(function(index, value) {
+								tooltip_anhaengen(value, function(value) {
+									return 'kurzfristig lieferbar';
+								});
+							});
+						}
 
+						if(tabs[i].haendlerlink_kuerzen)
+							$('#pricetab_content' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
+								tooltip_anhaengen(value, function(value) {
+									value.attr('title', value.text());
+									var flagge = value.find('img:first').clone();
+									var haendlerlink = value.find('a').clone();
+									value.empty();
+									return flagge[0].outerHTML + ' ' + haendlerlink[0].outerHTML;
+								});
+							});
+
+						$('#pricetab_content' + i + ' #content_table th:nth-child(2)').css('width', '160px');
+						$('#pricetab_content' + i).tooltip({
+								track: true,
+								items: '.tooltip',
+								content: function() {
+									return $(this).find('div.original_content').html();
+								}
+						});
 					}
 				});
 
