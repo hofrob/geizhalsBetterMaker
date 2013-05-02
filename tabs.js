@@ -1,4 +1,4 @@
-$(function () {
+$(function() {
 
 	if(!/a\d+\.html/i.test(window.location.pathname))
 		return;
@@ -79,7 +79,7 @@ $(function () {
 						if(tabs[i].info_agb_link_ausblenden)
 							$('#pricetab_content' + i + ' div.gh_hl1').remove();
 
-						if(tabs[i].preisfeld_ausmisten)
+						if(tabs[i].preisfeld_ausmisten) {
 							$('#pricetab_content' + i + ' #content_table tr').find('td:first').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
 									value.attr('title', value.text());
@@ -96,21 +96,26 @@ $(function () {
 										return preis[0].outerHTML + ' ' + kkimg[0].outerHTML;
 								});
 							});
+							$('#pricetab_content' + i + ' #content_table tr th:first').css('width', '100px');
+						}
 
-						if(tabs[i].bewertungsinfo_kuerzen)
+						if(tabs[i].bewertungsinfo_kuerzen) {
 							$('#pricetab_content' + i + ' #content_table tr td:nth-child(3)').each(function(index, value) {
 
-								if(/hat keine g.ltigen bewertungen/i.test(value.innerText)) {
-									$(value).find('a').first().prepend('0/0 ');
-								} else {
-									note = '<br>' + value.innerText.replace(/\s*Note\:\s*|\s*Bewertung(en)?/g, '').replace(/\n/, '/');
-									$(value).find('a').first().append(note);
-								}
-
-								kurze_bewertung = $(value).find('a').first().clone();
-								$(value).empty();
-								$(value).append(kurze_bewertung);
+								tooltip_anhaengen(value, function(value) {
+									var a = value.find('a').first().clone();
+									if(/hat keine g.ltigen bewertungen/i.test(value.text())) {
+										a.html('keine Bewertungen');
+									} else {
+										var bewertungen = value.find('small a').text().replace(/.*?(\d+)\s*Bewertung(en)?/i, '$1');
+										var note = value.find('small:first').text().replace(/Note.*?([\d,]+).*/i, '$1');
+										a.append('<br>' + note + '/' + bewertungen);
+									}
+									return a[0].outerHTML;
+								});
 							});
+							$('#pricetab_content' + i + ' #content_table tr th:nth-child(3)').css('width', '120px');
+						}
 
 						if(tabs[i].lagerstand_kuerzen) {
 							$('#pricetab_content' + i + ' #content_table .av_inl').css('height', 'auto');
@@ -126,18 +131,28 @@ $(function () {
 							});
 						}
 
-						if(tabs[i].haendlerlink_kuerzen)
+						if(tabs[i].haendlerlink_kuerzen) {
 							$('#pricetab_content' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
-									value.attr('title', value.text());
-									var flagge = value.find('img:first').clone();
-									var haendlerlink = value.find('a').clone();
-									value.empty();
-									return flagge[0].outerHTML + ' ' + haendlerlink[0].outerHTML;
+									var haendlerlink = value.find('img:first').clone()[0].outerHTML;
+									haendlerlink = haendlerlink.concat(value.find('a').clone()[0].outerHTML);
+									if(tabs[i].bezugsart == 'abholung') {
+										haendlerlink = haendlerlink.concat('<br>' + value.find('b span').text().replace(/\s/g, '') + ' ');
+										value.find('a:last').html('Karte');
+										haendlerlink = haendlerlink.concat(value.find('a:last')[0].outerHTML);
+									}
+									return haendlerlink;
 								});
 							});
+							$('#pricetab_content' + i + ' #content_table tr td:nth-child(2) img+br').remove();
+						}
+
+						if(tabs[i].spaltenueberschriften_ausblenden)
+							$('#pricetab_content' + i + ' #content_table tr:lt(2)').hide();
 
 						$('#pricetab_content' + i + ' #content_table th:nth-child(2)').css('width', '160px');
+						$('#pricetab_content' + i + ' #content_table tr.t1:first td:nth-child(2)').css('width', '160px');
+						$('#pricetab_content' + i + ' #content_table tr.t1:first td:nth-child(1)').css('width', '70px');
 						$('#pricetab_content' + i).tooltip({
 								track: true,
 								items: '.tooltip',

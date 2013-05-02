@@ -1,8 +1,11 @@
 $(function() {
+
+	if(!/a\d+\.html/i.test(window.location.pathname))
+		return;
+
 	chrome.storage.sync.get(null, function(syncStorage) {
 
 		var allgemein = syncStorage['allgemein'];
-		console.log(allgemein);
 		var artikel = $(location).attr('pathname').replace(/.*a(\d+)\.html.*/i, '$1');
 
 		if(allgemein.bilder_gallerie) {
@@ -94,57 +97,62 @@ $(function() {
 			}
 		}
 
-//		$('#gh_proddesc').css('width', '600px');
-		var diverse_infos = $(document.createElement('div'));
-		diverse_infos.hide();
-		diverse_infos.attr('id', 'diverse_infos');
-		diverse_infos.css('float', 'left');
-		diverse_infos.css('width', '500px');
-		diverse_infos.append($('#gh_proddesc p'));
-		diverse_infos.append($('#gh_prod_misc_controls'));
-		diverse_infos.append($('#gh_artstuff'));
-		diverse_infos.css('height', '200px');
-		diverse_infos.css('overflow', 'auto');
-		diverse_infos.css('width', '600px');
-		$('#gh_artbox').append(diverse_infos);
+		if(allgemein.zusatzinfos_ausblenden) {
+			var diverse_infos = $(document.createElement('div'));
+			diverse_infos.hide();
+			diverse_infos.attr('id', 'diverse_infos');
+			diverse_infos.css('float', 'left');
+			diverse_infos.css('width', '500px');
+			diverse_infos.append($('#gh_proddesc p'));
+			diverse_infos.append($('#gh_prod_misc_controls'));
+			diverse_infos.append($('#gh_artstuff'));
+			diverse_infos.css('height', '200px');
+			diverse_infos.css('overflow', 'auto');
+			diverse_infos.css('width', '600px');
+			$('#gh_artbox').append(diverse_infos);
 
-		var toggle_diverse_infos = $(document.createElement('div'));
-		toggle_diverse_infos.attr('id', 'toggle_diverse_infos');
+			var toggle_diverse_infos = $(document.createElement('div'));
+			toggle_diverse_infos.attr('id', 'toggle_diverse_infos');
 
-		var button = $(document.createElement('button'));
-		button.attr('type', 'button');
-		button.html('Zusatzinfos Anzeigen');
+			var button = $(document.createElement('button'));
+			button.attr('type', 'button');
+			button.html('Zusatzinfos Anzeigen');
 
-		toggle_diverse_infos.append(button);
-		$('#diverse_infos').before(toggle_diverse_infos);
+			toggle_diverse_infos.append(button);
+			$('#diverse_infos').before(toggle_diverse_infos);
 
-		$('#toggle_diverse_infos button').click(function() {
-			if($('#diverse_infos').is(':visible')) {
-				$('#diverse_infos').hide();
-				$('#toggle_diverse_infos button').html('Zusatzinfos Anzeigen');
-			} else {
-				$('#diverse_infos').show();
-				$('#toggle_diverse_infos button').html('Verstecken');
-			}
-		});
-
-		if($('#gh_proddesc span').is(':empty'))
-			$('#gh_proddesc').remove();
-
-		$('#gh_proddesc').css('max-width', '500px').parent().css('max-width', '500px');
-		tooltip_anhaengen('#gh_proddesc', function(value) {
-			value = value.first();
-			value.html(value.text().replace(/•[^•]*?k\.A\.[^•]*/g, ''));
-			console.log(value.html());
-			return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
-		});
-
-		$(document).tooltip({
-				track: true,
-				items: '.tooltip',
-				content: function() {
-					return $(this).find('div.original_content').html();
+			$('#toggle_diverse_infos button').click(function() {
+				if($('#diverse_infos').is(':visible')) {
+					$('#diverse_infos').hide();
+					$('#toggle_diverse_infos button').html('Zusatzinfos Anzeigen');
+				} else {
+					$('#diverse_infos').show();
+					$('#toggle_diverse_infos button').html('Verstecken');
 				}
-		});
+			});
+
+			if($('#gh_proddesc span').is(':empty'))
+				$('#gh_proddesc').remove();
+		}
+
+		if(allgemein.produktbeschreibung_verschoenern) {
+			$('#gh_proddesc').css('max-width', '500px').parent().css('max-width', '500px');
+			tooltip_anhaengen('#gh_proddesc', function(value) {
+				value = value.first();
+				value.html(value.text().replace(/•[^•]*?(k\.A\.|N\/A|keine\s*Angabe)[^•]*/g, ''));
+				return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
+			});
+
+			$('#gh_proddesc ul').css('margin', '5px');
+			$('#gh_proddesc ul').css('padding-left', '30px');
+
+			$(document).tooltip({
+					track: true,
+					items: '.tooltip',
+					content: function() {
+						return $(this).find('div.original_content').html();
+					}
+			});
+		}
 	});
 });

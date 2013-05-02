@@ -4,7 +4,7 @@ function restore_options() {
 	$('#tab_entfernen').prop('disabled', true);
 	$('#als_standard').prop('disabled', true);
 	chrome.storage.sync.get(null, function(syncStorage) {
-
+		console.log(syncStorage);
 		var tabs = syncStorage['tabs'];
 
 		if(tabs && tabs.length >= 6)
