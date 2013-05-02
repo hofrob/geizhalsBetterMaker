@@ -41,7 +41,7 @@ $(function() {
 						}
 
 						$('#gh_proddesc_left').after(gallery);
-						$('#ghgallery img').first().show();
+						$('#ghgallery img').first().show().css('padding', '5px');
 						$('.fancybox').fancybox({
 							helpers : {
 								thumbs: {
@@ -106,7 +106,7 @@ $(function() {
 			diverse_infos.append($('#gh_proddesc p'));
 			diverse_infos.append($('#gh_prod_misc_controls'));
 			diverse_infos.append($('#gh_artstuff'));
-			diverse_infos.css('height', '200px');
+			diverse_infos.css('max-height', '150px');
 			diverse_infos.css('overflow', 'auto');
 			diverse_infos.css('width', '600px');
 			$('#gh_artbox').append(diverse_infos);
@@ -143,7 +143,7 @@ $(function() {
 				return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
 			});
 
-			$('#gh_proddesc ul').css('margin', '5px');
+			$('#gh_proddesc ul').css('margin', '0px');
 			$('#gh_proddesc ul').css('padding-left', '30px');
 
 			$(document).tooltip({
