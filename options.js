@@ -89,7 +89,7 @@ $(function() {
 			cb = $('#allgemein > [type=checkbox]');
 
 		for(var i=0; i < cb.length; i++) {
-			allgemein[$(cb[i]).context.id] = $(cb).prop('checked');
+			allgemein[$(cb[i]).context.id] = $(cb[i]).prop('checked');
 		}
 		chrome.storage.sync.set({'allgemein': allgemein});
 	});

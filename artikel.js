@@ -8,6 +8,11 @@ $(function() {
 		var allgemein = syncStorage['allgemein'];
 		var artikel = $(location).attr('pathname').replace(/.*a(\d+)\.html.*/i, '$1');
 
+		if(allgemein.immer_tabs_laden && (window.location.search || window.location.hash)) {
+			window.location = window.location.pathname;
+			return;
+		}
+
 		if(allgemein.bilder_gallerie) {
 			if($('#img_btns').length) {
 				$('#gh_proddesc_right').remove();
