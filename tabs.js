@@ -143,9 +143,15 @@ $(function() {
 							});
 							$('#preistab_inhalt' + i + ' #content_table div.av_k').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
-									return 'kurzfristig lieferbar';
+									return 'bis 4 Werktage';
 								});
 							});
+							$('#preistab_inhalt' + i + ' #content_table div.av_e').each(function(index, value) {
+								tooltip_anhaengen(value, function(value) {
+									return '4+ Werktage';
+								});
+							});
+							$('#preistab_inhalt' + i + ' #content_table tr.t1:first td:nth-child(4)').css('width', '90px');
 						}
 
 						if(tabs[i].haendlerlink_kuerzen) {

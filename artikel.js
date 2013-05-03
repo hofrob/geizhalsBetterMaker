@@ -25,7 +25,9 @@ $(function() {
 						gallery.attr('id', 'ghgallery');
 						gallery.css('float', 'left');
 
-						for(var i = 0; i < $('div.morepix', data).length; i++) {
+						var bilder_anzahl = $('div.morepix', data).length;
+
+						for(var i = 0; i < bilder_anzahl; i++) {
 							var value = $('div.morepix', data)[i];
 							var a = $(document.createElement('a'));
 							a.addClass('fancybox');
@@ -46,7 +48,21 @@ $(function() {
 						}
 
 						$('#gh_proddesc_left').after(gallery);
-						$('#ghgallery img').first().show().css('padding', '5px');
+						$('#ghgallery img').first().show().css('padding', '0px 5px');
+
+						var bildtitel = '';
+						if($('#ghgallery a').first().attr('title'))
+							bildtitel = ' - <b>' + $('#ghgallery a').first().attr('title') + '</b>';
+
+						var p = $(document.createElement('p'));
+						p.html(' Bild 1/' + bilder_anzahl + bildtitel);
+						p.css({
+							'text-align': 'center',
+							'margin': '0px',
+							'height': 'auto'
+						});
+
+						$('#ghgallery a').first().after(p);
 						$('.fancybox').fancybox({
 							helpers : {
 								thumbs: {
@@ -58,18 +74,25 @@ $(function() {
 					}
 				});
 			} else if($('#img_wrapper').length) {
-				var gallery = $(document.createElement('div'));
-				gallery.attr('id', 'ghgallery');
-				gallery.css('float', 'left');
+
+				var img = $(document.createElement('img'));
+				img.attr('src', $('#img_wrapper').find('img').attr('src'));
+				img.css({
+					'max-height': '150px',
+					'padding': '5px'
+				});
+
 				var a = $(document.createElement('a'));
 				a.addClass('fancybox');
 				a.attr('href', $('#img_wrapper').find('img').attr('src'));
 				a.attr('data-fancybox-group', 'gallery');
-				var img = $(document.createElement('img'));
-				img.attr('src', $('#img_wrapper').find('img').attr('src'));
-				img.css('max-height', '150px');
 				a.append(img);
+
+				var gallery = $(document.createElement('div'));
+				gallery.attr('id', 'ghgallery');
+				gallery.css('float', 'left');
 				gallery.append(a);
+
 				$('#gh_proddesc_left').after(gallery);
 				$('#gh_proddesc_right').remove();
 				$('.fancybox').fancybox({
@@ -158,6 +181,14 @@ $(function() {
 						return $(this).find('div.original_content').html();
 					}
 			});
+
+			if($(window).width() - $('#diverse_infos').position().left - $('#diverse_infos').width() > 200) {
+				$('#gh_proddesc').css({
+					'max-width': '700px',
+					'width': '690px'
+				}).parent().css('max-width', '700px');
+				$('#gh_proddesc').css('-webkit-column-count', '2');
+			}
 		}
 	});
 });
