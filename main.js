@@ -11,3 +11,24 @@ function tooltip_anhaengen(value, aufraeumen) {
 	$(value).append(div);
 	$(value).addClass('tooltip');
 }
+
+function getvars_fuer_tab(tab) {
+	var data = {
+		t: tab.bezugsart[0]
+	};
+
+	if(tab.bezugsart == 'versand') {
+		data.vl = tab.loc;
+		data.va = 'b';
+	} else {
+		data.plz = tab.loc;
+	}
+
+	if(tab.verfuegbarkeit == 'beliebig') {
+		data.v = 'e';
+	} else {
+		data.v = tab.verfuegbarkeit[0];
+	}
+
+	return data;
+}

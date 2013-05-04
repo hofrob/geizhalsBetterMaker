@@ -13,14 +13,14 @@
 			"http://*.geizhals.eu/*"
 		],
 		"css": [
-			"jquery-ui-1.10.2.custom.min.css",
+			"jquery-ui-1.10.3.custom.min.css",
 			"ghbettermaker.css",
 			"jquery.fancybox.css",
 			"jquery.fancybox-thumbs.css"
 		],
 		"js": [
 			"jquery-2.0.0.min.js",
-			"jquery-ui-1.10.2.custom.min.js",
+			"jquery-ui-1.10.3.custom.min.js",
 			"jquery.fancybox.pack.js",
 			"jquery.mousewheel-3.0.6.pack.js",
 			"jquery.fancybox-thumbs.js",
@@ -29,6 +29,13 @@
 			"tabs.js"
 		]
 	}],
+	"background": {
+		"scripts": [
+			"jquery-2.0.0.min.js",
+			"main.js",
+			"preisagent.js"
+		]
+	},
 	"web_accessible_resources": [
 		"images/blank.gif",
 		"images/fancybox_sprite.png",
@@ -54,6 +61,7 @@
 		"http://*.geizhals.at/*",
 		"http://*.geizhals.de/*",
 		"http://*.geizhals.eu/*",
-		"storage"
+		"storage",
+		"notifications"
 	]
 }

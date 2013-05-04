@@ -34,7 +34,8 @@ $(function() {
 							a.attr('href', $(value).find('img').attr('src'));
 							a.attr('data-fancybox-group', 'gallery');
 
-							if(/bepixelung/.test($(value).find('img').closest('a').attr('href')))
+							if(/bepixelung/.test($(value).find('img').closest('a').attr('href')) ||
+								$(value).find('img').parent().find('sub').length)
 								a.attr('title', 'powered by bepixelung.org');
 							else
 								a.attr('title', $(value).find('sub').html());

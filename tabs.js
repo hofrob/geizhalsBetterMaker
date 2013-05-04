@@ -30,7 +30,7 @@ $(function() {
 		$('#preistabs').prepend('<ul><li><a href="#allepreise">Alle Preise</a></li></ul>');
 
 		for(var i = 0; i < tabs.length; i++) {
-			$('#preistabs ul').append('<li><a href="#preistab_inhalt' + i + '">' + tabs[i].tabname + '</a></li>');
+			$('#preistabs ul').append('<li><a href="#preistab_inhalt' + i + '">' + tabs[i].tabname + ' </a></li>');
 			$('#preistabs').append('<div id="preistab_inhalt' + i + '" />');
 		}
 
@@ -39,25 +39,98 @@ $(function() {
 
 				var i = $('#preistabs').tabs("option", "active") - 1;
 
+				if(i >= 0) {
+					var img = $(document.createElement('img'));
+					img.attr('src', '//geizhals.at/b/cog2.png');
+					img.css({
+						'vertical-align': 'middle',
+						'cursor': 'pointer'
+					});
+					$('#preistabs ul li:nth-child(' + eval(i+2) + ') a').append(img);
+					$('#preistabs ul li:nth-child(' + eval(i+2) + ') img').click(function() {
+
+						var tab = $(this).parent().attr('href').replace(/#preistab_inhalt(\d+)$/, '$1');
+						var div = $(document.createElement('div'));
+						div.attr('id', '#tabsettings');
+
+						var input = $(document.createElement('input'));
+						input.attr({
+							type: 'hidden',
+							name: 'url',
+							id: 'preisagent_url',
+							value: window.location.origin + window.location.pathname + '?' + $.param(getvars_fuer_tab(tabs[i]))
+						});
+						div.append(input);
+
+						var bestpreis = parseFloat($('#preistab_inhalt' + tab + ' #content_table span.price').first().html().replace(/,/, '.'));
+
+						var input = $(document.createElement('input'));
+						input.attr({
+							type: 'text',
+							name: 'preisagent_limit',
+							id: 'preisagent_limit',
+							value: bestpreis
+						});
+						div.append(input);
+
+						var input = $(document.createElement('input'));
+						input.attr({
+							type: 'hidden',
+							name: 'preisagent_tab',
+							id: 'preisagent_tab',
+							value: tab
+						});
+						div.append(input);
+
+						$('body').append(div);
+						div.dialog({
+							autoOpen: false,
+							height: 150,
+							width: 300,
+							modal: true,
+							buttons: {
+								Ok: function() {
+									var preisagent = {
+										url: $('#preisagent_url').val(),
+										limit: $('#preisagent_limit').val(),
+										tab: $('#preisagent_tab').val(),
+										aktiv: true
+									};
+
+									chrome.storage.sync.get('preisagenten', function(syncStorage) {
+										var preisagenten = syncStorage['preisagenten'];
+
+										for(var i = 0; i < preisagenten.length; i++) {
+											if(preisagenten[i].tab == preisagent.tab && preisagenten[i].url == preisagent.url) {
+												delete preisagenten[i];
+												break;
+											}
+										}
+
+										preisagenten.push(preisagent);
+										chrome.storage.sync.set({'preisagenten': preisagenten});
+									});
+
+									$(this).dialog('close');
+									div.dialog('destroy');
+									div.remove();
+								},
+								Abbrechen: function() {
+									$(this).dialog('close');
+									div.dialog('destroy');
+									div.remove();
+								}
+							}
+						});
+						div.dialog('open');
+					});
+				}
+				$('#preistabs ul li:gt(' + eval(i+1) + '),#preistabs ul li:lt(' + eval(i+1) + ')').find('img').remove();
+
 				if($('#preistab_inhalt' + i + ' #content_table').length > 0 || i < 0)
 					return;
 
-				var data = {
-					t: tabs[i].bezugsart[0]
-				};
-
-				if(tabs[i].bezugsart == 'versand') {
-					data.vl = tabs[i].loc;
-					data.va = 'b';
-				} else {
-					data.plz = tabs[i].loc;
-				}
-
-				if(tabs[i].verfuegbarkeit == 'beliebig') {
-					data.v = 'e';
-				} else {
-					data.v = tabs[i].verfuegbarkeit[0];
-				}
+				data = getvars_fuer_tab(tabs[i]);
 
 				$.ajax({
 					data: data,
@@ -125,6 +198,7 @@ $(function() {
 									} else {
 										var bewertungen = value.find('small a').text().replace(/.*?(\d+)\s*Bewertung(en)?/i, '$1');
 										var note = value.find('small:first').text().replace(/Note.*?([\d,]+).*/i, '$1');
+										note = parseFloat(note.replace(/,/, '.')).toFixed(2).replace(/\./, ',');
 										a.append('<br>' + note + '/' + bewertungen);
 									}
 									return a[0].outerHTML;
