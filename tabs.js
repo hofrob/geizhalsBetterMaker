@@ -20,6 +20,7 @@ $(function() {
 
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
+		var allgemein = syncStorage['allgemein'];
 
 		if(!tabs)
 			return;
@@ -31,8 +32,6 @@ $(function() {
 		for(var i = 0; i < tabs.length; i++) {
 			$('#preistabs ul').append('<li><a href="#preistab_inhalt' + i + '">' + tabs[i].tabname + '</a></li>');
 			$('#preistabs').append('<div id="preistab_inhalt' + i + '" />');
-			if(tabs[i].als_standard)
-				var standard_tab_index = i + 1;
 		}
 
 		$('#preistabs').tabs({
@@ -157,7 +156,11 @@ $(function() {
 						if(tabs[i].haendlerlink_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
-									var haendlerlink = value.find('img:first').clone()[0].outerHTML;
+									if(value.find('img:first.hlflg').length)
+										var haendlerlink = value.find('img:first.hlflg').clone()[0].outerHTML;
+									else
+										var haendlerlink = '';
+
 									haendlerlink = haendlerlink.concat(value.find('a').clone()[0].outerHTML);
 									if(tabs[i].bezugsart == 'abholung') {
 										haendlerlink = haendlerlink.concat('<br>' + value.find('b span').text().replace(/\s/g, '') + ' ');
@@ -188,7 +191,7 @@ $(function() {
 
 			}
 		});
-		if(standard_tab_index)
-			$('#preistabs').tabs('option', 'active', standard_tab_index);
+		if(allgemein.standard_tab)
+			$('#preistabs').tabs('option', 'active', allgemein.standard_tab + 1);
 	});
 });

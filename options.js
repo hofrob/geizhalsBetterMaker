@@ -6,6 +6,7 @@ function restore_options() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		console.log(syncStorage);
 		var tabs = syncStorage['tabs'];
+		var allgemein = syncStorage['allgemein'];
 
 		if(tabs && tabs.length >= 6)
 			$('form > fieldset').prop('disabled', true).css('color', '#707070');
@@ -15,8 +16,7 @@ function restore_options() {
 		reset_form();
 
 		$(tabs).each(function(index, value) {
-
-			if(value.als_standard)
+			if(allgemein.standard_tab == index)
 				text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
 			else
 				text = '<option value="' + index + '">' + value.tabname + '</option>';
@@ -24,7 +24,6 @@ function restore_options() {
 			$('[name=usertabs]').append(text);
 		});
 
-		var allgemein = syncStorage['allgemein'];
 		cb = Object.keys(allgemein);
 		for(var i=0; i < cb.length; i++) {
 			$('#' + cb[i]).prop('checked', allgemein[cb[i]]);
@@ -166,17 +165,11 @@ $(function() {
 		}
 
 		chrome.storage.sync.get(null, function(syncStorage) {
-			var tabs = syncStorage['tabs'];
+			var allgemein = syncStorage['allgemein'];
 
-			for(var i = 0; i < tabs.length; i++) {
-				if(i == tab_als_standard[0]) {
-					tabs[i].als_standard = true;
-				} else {
-					tabs[i].als_standard = false;
-				}
-			}
+			allgemein.standard_tab = tab_als_standard[0];
 
-			chrome.storage.sync.set({'tabs': tabs});
+			chrome.storage.sync.set({'allgemein': allgemein});
 			restore_options();
 		});
 	});
