@@ -45,6 +45,9 @@ function restore_options() {
 			$('#preisagenten').append(text);
 		});
 	});
+	chrome.storage.local.get(null, function(syncStorage) {
+		console.log(syncStorage);
+	});
 }
 
 function reset_form() {
@@ -128,7 +131,7 @@ $(function() {
 			};
 		} else {
 			newtab = {
-				bezugsart: 'keine Bezugsart'
+				bezugsart: 'keine'
 			};
 		}
 
@@ -141,8 +144,8 @@ $(function() {
 
 		if(/\w+/i.test($('#tabname').val()))
 			newtab.tabname = $('#tabname').val();
-		else if(newtab.bezugsart == 'keine Bezugsart')
-			newtab.tabname = newtab.bezugsart + '; Verf: ' + newtab.verfuegbarkeit[0].toUpperCase();
+		else if(newtab.bezugsart == 'keine')
+			newtab.tabname = 'keine Bezugsart; Verf: ' + newtab.verfuegbarkeit[0].toUpperCase();
 		else
 			newtab.tabname = newtab.bezugsart + ': ' + newtab.loc + '; Verf: ' + newtab.verfuegbarkeit[0].toUpperCase();
 

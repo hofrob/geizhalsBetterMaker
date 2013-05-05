@@ -14,7 +14,6 @@
 		],
 		"css": [
 			"jquery-ui-1.10.3.custom.min.css",
-			"ghbettermaker.css",
 			"jquery.fancybox.css",
 			"jquery.fancybox-thumbs.css"
 		],
@@ -25,6 +24,7 @@
 			"jquery.mousewheel-3.0.6.pack.js",
 			"jquery.fancybox-thumbs.js",
 			"main.js",
+			"kategorien.js",
 			"artikel.js",
 			"tabs.js"
 		]
@@ -55,7 +55,8 @@
 		"images/ui-icons_6da8d5_256x240.png",
 		"images/ui-icons_cd0a0a_256x240.png",
 		"images/ui-icons_d8e7f3_256x240.png",
-		"images/ui-icons_f9bd01_256x240.png"
+		"images/ui-icons_f9bd01_256x240.png",
+		"kategorien.json"
 	],
 	"permissions": [
 		"http://*.geizhals.at/*",
