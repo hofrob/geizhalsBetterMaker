@@ -1,3 +1,10 @@
+var dev = false;
+
+chrome.storage.sync.get('dev', function(syncStorage) {
+	if(syncStorage.dev)
+		dev = syncStorage.dev;
+});
+
 function tooltip_anhaengen(value, aufraeumen) {
 	value = $(value);
 

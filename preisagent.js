@@ -1,6 +1,9 @@
 
 function check_preisagenten() {
 	chrome.storage.sync.get(null, function(syncStorage) {
+		if(!syncStorage.dev)
+			return;
+
 		var preisagenten = syncStorage['preisagenten'];
 		var tabs = syncStorage['tabs'];
 

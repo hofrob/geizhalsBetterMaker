@@ -6,10 +6,13 @@
 		<link rel="stylesheet" type="text/css" href="jquery-ui-1.10.3.custom.min.css">
 		<style type="text/css">
 			body {
-				width: 400px;
 				background-color: #293134;
 				color: #E0E2E4;
 				font: 100% arial;
+			}
+			div.spalte {
+				width: 400px;
+				float: left;
 			}
 			#error {
 				font:bold 100% Verdana;
@@ -37,88 +40,99 @@
 	</head>
 
 	<body>
-		<form>
-			<fieldset id="allgemein">
-				<legend>Allgemeine Einstellungen</legend>
-				<input type="checkbox" name="bilder_gallerie" value="bilder_gallerie" id="bilder_gallerie" />
-				<label for="bilder_gallerie">Bildergallerie</label><br/>
-				<input type="checkbox" name="produktbeschreibung_verschoenern" value="produktbeschreibung_verschoenern" id="produktbeschreibung_verschoenern" />
-				<label for="produktbeschreibung_verschoenern">Produktbeschreibung verschönern</label><br/>
-				<input type="checkbox" name="zusatzinfos_ausblenden" value="zusatzinfos_ausblenden" id="zusatzinfos_ausblenden" />
-				<label for="zusatzinfos_ausblenden">Diverse Infos ausblenden</label><br/>
-				<input type="checkbox" name="immer_tabs_laden" value="immer_tabs_laden" id="immer_tabs_laden" />
-				<label for="immer_tabs_laden">Immer BetterMaker Tabs laden</label><br/>
-			</fieldset>
-			<button id="speichern" type="button">Speichern</button>
-		</form>
-		<form>
-			<fieldset>
-				<select name="usertabs" size="6" multiple>
-				</select>
-				<button id="tab_entfernen" type="button">Entfernen</button>
-				<button id="als_standard" type="button">Als Standard Tab</button>
+		<div class="spalte">
+			<form>
+				<fieldset id="allgemein">
+					<legend>Allgemeine Einstellungen</legend>
+					<input type="checkbox" name="bilder_gallerie" value="bilder_gallerie" id="bilder_gallerie" />
+					<label for="bilder_gallerie">Bildergallerie</label><br/>
+					<input type="checkbox" name="produktbeschreibung_verschoenern" value="produktbeschreibung_verschoenern" id="produktbeschreibung_verschoenern" />
+					<label for="produktbeschreibung_verschoenern">Produktbeschreibung verschönern</label><br/>
+					<input type="checkbox" name="zusatzinfos_ausblenden" value="zusatzinfos_ausblenden" id="zusatzinfos_ausblenden" />
+					<label for="zusatzinfos_ausblenden">Diverse Infos ausblenden</label><br/>
+					<input type="checkbox" name="immer_tabs_laden" value="immer_tabs_laden" id="immer_tabs_laden" />
+					<label for="immer_tabs_laden">Immer BetterMaker Tabs laden</label><br/>
+				</fieldset>
+				<button id="speichern" type="button">Speichern</button>
+			</form>
+			<form>
+				<fieldset>
+					<select name="usertabs" id="usertabs" size="6" multiple></select>
+					<button id="tab_entfernen" type="button">Entfernen</button>
+					<button id="als_standard" type="button">Als Standard Tab</button>
 
-				<legend>Tab Infos</legend>
-				<label for="tabname">Titel</label>
-				<input type="text" name="tabname" id="tabname" placeholder="zB: Abh Büro, Versand (optional)" />
-			</fieldset>
-			<fieldset id="verschoenern">
-				<legend>Verschönerungen</legend>
-				<input type="checkbox" name="vkinfo_ausblenden" value="vkinfo_ausblenden" id="vkinfo_ausblenden" />
-				<label for="vkinfo_ausblenden">Versandkosteninfo in diesem Tab ausblenden</label><br/>
-				<input type="checkbox" name="info_agb_link_ausblenden" value="info_agb_link_ausblenden" id="info_agb_link_ausblenden" />
-				<label for="info_agb_link_ausblenden">Info&amp;AGB-Link ausblenden</label><br/>
-				<input type="checkbox" name="preisfeld_ausmisten" value="preisfeld_ausmisten" id="preisfeld_ausmisten" />
-				<label for="preisfeld_ausmisten">Preisfeld ausmisten</label><br/>
-				<input type="checkbox" name="beschreibungstext_kuerzen" value="beschreibungstext_kuerzen" id="beschreibungstext_kuerzen" />
-				<label for="beschreibungstext_kuerzen">Beschreibungstext kürzen und Gütesiegel ausblenden</label><br/>
-				<input type="checkbox" name="bewertungsinfo_kuerzen" value="bewertungsinfo_kuerzen" id="bewertungsinfo_kuerzen" />
-				<label for="bewertungsinfo_kuerzen">Bewertungsinfo kürzen</label><br/>
-				<input type="checkbox" name="filterbox_ausblenden" value="filterbox_ausblenden" id="filterbox_ausblenden" />
-				<label for="filterbox_ausblenden">Filterbox ausblenden</label><br/>
-				<input type="checkbox" name="lagerstand_kuerzen" value="lagerstand_kuerzen" id="lagerstand_kuerzen" />
-				<label for="lagerstand_kuerzen">Lagerstand kürzen</label><br/>
-				<input type="checkbox" name="haendlerlink_kuerzen" value="haendlerlink_kuerzen" id="haendlerlink_kuerzen" />
-				<label for="haendlerlink_kuerzen">Händlerlink kürzen</label><br/>
-				<input type="checkbox" name="spaltenueberschriften_ausblenden" value="spaltenueberschriften_ausblenden" id="spaltenueberschriften_ausblenden" />
-				<label for="spaltenueberschriften_ausblenden">Spaltenüberschriften ausblenden</label><br/>
-				<input type="checkbox" name="kreditkartenlogos_ausblenden" value="kreditkartenlogos_ausblenden" id="kreditkartenlogos_ausblenden" />
-				<label for="kreditkartenlogos_ausblenden">Kreditkartenlogos ausblenden</label><br/>
-			</fieldset>
-			<fieldset>
-				<legend>Bezugsart</legend>
-				<input type="radio" name="bezugsart" value="abholung" id="abholung" /><label for="abholung">Abholung</label><br>
-				<input type="radio" name="bezugsart" value="versand" id="versand" /><label for="versand">Versand</label><br>
-			</fieldset>
-			<fieldset>
-				<legend>Abholung in der Nähe von</legend>
-				<label for="abholadresse">Adresse</label>
-				<input type="text" name="abholadresse" id="abholadresse" placeholder="zB: PLZ oder Geokoordinaten " />
-			</fieldset>
-			<fieldset>
-				<legend>Versand nach</legend>
-				<input type="radio" name="versandland" value="at" id="versand_at" /><label for="versand_at">Österreich</label><br>
-				<input type="radio" name="versandland" value="de" id="versand_de" /><label for="versand_de">Deutschland</label><br>
-			</fieldset>
-			<fieldset>
-				<legend>Verfügbarkeit</legend>
-				<div>
-					<input type="radio" name="verfuegbarkeit" value="beliebig" id="beliebig" />
-					<label for="beliebig">beliebige Verfügbarkeit</label>
+					<legend>Tab Infos</legend>
+					<label for="tabname">Titel</label>
+					<input type="text" name="tabname" id="tabname" placeholder="zB: Abh Büro, Versand (optional)" />
+				</fieldset>
+				<fieldset id="verschoenern">
+					<legend>Verschönerungen</legend>
+					<input type="checkbox" name="vkinfo_ausblenden" value="vkinfo_ausblenden" id="vkinfo_ausblenden" />
+					<label for="vkinfo_ausblenden">Versandkosteninfo in diesem Tab ausblenden</label><br/>
+					<input type="checkbox" name="info_agb_link_ausblenden" value="info_agb_link_ausblenden" id="info_agb_link_ausblenden" />
+					<label for="info_agb_link_ausblenden">Info&amp;AGB-Link ausblenden</label><br/>
+					<input type="checkbox" name="preisfeld_ausmisten" value="preisfeld_ausmisten" id="preisfeld_ausmisten" />
+					<label for="preisfeld_ausmisten">Preisfeld ausmisten</label><br/>
+					<input type="checkbox" name="beschreibungstext_kuerzen" value="beschreibungstext_kuerzen" id="beschreibungstext_kuerzen" />
+					<label for="beschreibungstext_kuerzen">Beschreibungstext kürzen und Gütesiegel ausblenden</label><br/>
+					<input type="checkbox" name="bewertungsinfo_kuerzen" value="bewertungsinfo_kuerzen" id="bewertungsinfo_kuerzen" />
+					<label for="bewertungsinfo_kuerzen">Bewertungsinfo kürzen</label><br/>
+					<input type="checkbox" name="filterbox_ausblenden" value="filterbox_ausblenden" id="filterbox_ausblenden" />
+					<label for="filterbox_ausblenden">Filterbox ausblenden</label><br/>
+					<input type="checkbox" name="lagerstand_kuerzen" value="lagerstand_kuerzen" id="lagerstand_kuerzen" />
+					<label for="lagerstand_kuerzen">Lagerstand kürzen</label><br/>
+					<input type="checkbox" name="haendlerlink_kuerzen" value="haendlerlink_kuerzen" id="haendlerlink_kuerzen" />
+					<label for="haendlerlink_kuerzen">Händlerlink kürzen</label><br/>
+					<input type="checkbox" name="spaltenueberschriften_ausblenden" value="spaltenueberschriften_ausblenden" id="spaltenueberschriften_ausblenden" />
+					<label for="spaltenueberschriften_ausblenden">Spaltenüberschriften ausblenden</label><br/>
+					<input type="checkbox" name="kreditkartenlogos_ausblenden" value="kreditkartenlogos_ausblenden" id="kreditkartenlogos_ausblenden" />
+					<label for="kreditkartenlogos_ausblenden">Kreditkartenlogos ausblenden</label><br/>
+				</fieldset>
+				<fieldset>
+					<legend>Bezugsart</legend>
+					<input type="radio" name="bezugsart" value="abholung" id="abholung" /><label for="abholung">Abholung</label><br>
+					<input type="radio" name="bezugsart" value="versand" id="versand" /><label for="versand">Versand</label><br>
+				</fieldset>
+				<fieldset>
+					<legend>Abholung in der Nähe von</legend>
+					<label for="abholadresse">Adresse</label>
+					<input type="text" name="abholadresse" id="abholadresse" placeholder="zB: PLZ oder Geokoordinaten " />
+				</fieldset>
+				<fieldset>
+					<legend>Versand nach</legend>
+					<input type="radio" name="versandland" value="at" id="versand_at" /><label for="versand_at">Österreich</label><br>
+					<input type="radio" name="versandland" value="de" id="versand_de" /><label for="versand_de">Deutschland</label><br>
+				</fieldset>
+				<fieldset>
+					<legend>Verfügbarkeit</legend>
+					<div>
+						<input type="radio" name="verfuegbarkeit" value="beliebig" id="beliebig" />
+						<label for="beliebig">beliebige Verfügbarkeit</label>
+					</div>
+					<div class="lagernd">
+						<input type="radio" name="verfuegbarkeit" value="lagernd" id="lagernd" />
+						<label for="lagernd">lagernd beim Händler</label>
+					</div>
+					<div class="kurzfristig">
+						<input type="radio" name="verfuegbarkeit" value="kurzfristig" id="kurzfristig" />
+						<label for="kurzfristig">kurzfristig lieferbar (bis 4 Werktage)</label>
+					</div>
+				</fieldset>
+				<button id="tab_hinzufuegen" type="button">Hinzufügen</button>
+				<div id="error">
 				</div>
-				<div class="lagernd">
-					<input type="radio" name="verfuegbarkeit" value="lagernd" id="lagernd" />
-					<label for="lagernd">lagernd beim Händler</label>
-				</div>
-				<div class="kurzfristig">
-					<input type="radio" name="verfuegbarkeit" value="kurzfristig" id="kurzfristig" />
-					<label for="kurzfristig">kurzfristig lieferbar (bis 4 Werktage)</label>
-				</div>
-			</fieldset>
-			<button id="tab_hinzufuegen" type="button">Hinzufügen</button>
-			<div id="error">
-			</div>
-		</form>
+			</form>
+		</div>
+
+		<div class="spalte">
+			<form>
+				<fieldset>
+					<select name="preisagenten" id="preisagenten" size="6" multiple></select>
+					<legend>Preisagenten</legend>
+					<button id="preisagent_entfernen" type="button">Entfernen</button>
+				</fieldset>
+			</form>
+		</div>
 
 		<script type="text/javascript" src="jquery-2.0.0.min.js"></script>
 		<script type="text/javascript" src="jquery-ui-1.10.3.custom.min.js"></script>

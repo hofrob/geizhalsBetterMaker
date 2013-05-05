@@ -39,7 +39,7 @@ $(function() {
 
 				var i = $('#preistabs').tabs("option", "active") - 1;
 
-				if(i >= 0) {
+				if(syncStorage['dev'] && i >= 0) {
 					var img = $(document.createElement('img'));
 					img.attr('src', '//geizhals.at/b/cog2.png');
 					img.css({
@@ -94,6 +94,7 @@ $(function() {
 										url: $('#preisagent_url').val(),
 										limit: $('#preisagent_limit').val(),
 										tab: $('#preisagent_tab').val(),
+										name: '€ ' + $('#preisagent_limit').val() + ' "' + $('h1 span:first').text() + '"',
 										aktiv: true
 									};
 

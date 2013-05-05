@@ -1,33 +1,47 @@
 function restore_options() {
 	$('#error').html('');
-	$('[name=usertabs]').empty();
+	$('#usertabs').empty();
+	$('#preisagenten').empty();
 	$('#tab_entfernen').prop('disabled', true);
+	$('#preisagent_entfernen').prop('disabled', true);
 	$('#als_standard').prop('disabled', true);
 	chrome.storage.sync.get(null, function(syncStorage) {
+		if(!syncStorage['dev'])
+			$('#preisagenten').closest('form').hide();
 		console.log(syncStorage);
 		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
+		var preisagenten = syncStorage['preisagenten'];
 
 		if(tabs && tabs.length >= 6)
-			$('form > fieldset').prop('disabled', true).css('color', '#707070');
+			$('#usertabs').closest('form').prop('disabled', true).css('color', '#707070');
 		else
-			$('form > fieldset').prop('disabled', false).css('color', '#E0E2E4');
+			$('#usertabs').closest('form').prop('disabled', false).css('color', '#E0E2E4');
 
 		reset_form();
 
 		$(tabs).each(function(index, value) {
 			if(allgemein.standard_tab == index)
-				text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
+				var text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
 			else
-				text = '<option value="' + index + '">' + value.tabname + '</option>';
+				var text = '<option value="' + index + '">' + value.tabname + '</option>';
 
-			$('[name=usertabs]').append(text);
+			$('#usertabs').append(text);
 		});
 
 		cb = Object.keys(allgemein);
-		for(var i=0; i < cb.length; i++) {
+		for(var i=0; i < cb.length; i++)
 			$('#' + cb[i]).prop('checked', allgemein[cb[i]]);
-		}
+
+		if(preisagenten.length < 6)
+			$('#preisagenten').attr('size', '6');
+		else
+			$('#preisagenten').attr('size', preisagenten.length.toString());
+
+		$(preisagenten).each(function(index, value) {
+			var text = '<option value="' + index + '">' + value.name + '</option>';
+			$('#preisagenten').append(text);
+		});
 	});
 }
 
@@ -140,24 +154,42 @@ $(function() {
 	});
 
 	$('#tab_entfernen').click(function() {
-		var tabs_loeschen = $('[name=usertabs]').val();
-		if(!tabs_loeschen) {
+		var tabs_entfernen = $('#usertabs').val();
+		if(!tabs_entfernen) {
 			$('#error').html('Bitte mindestens ein Tab aus der Liste wählen.');
 			return;
 		}
 
 		chrome.storage.sync.get(null, function(syncStorage) {
 			var tabs = syncStorage['tabs'];
-			for(var i = 0; i < tabs_loeschen.length; i++) {
-				delete tabs[tabs_loeschen[i]];
-			}
+
+			for(var i = 0; i < tabs_entfernen.length; i++)
+				delete tabs[tabs_entfernen[i]];
+
 			chrome.storage.sync.set({'tabs': tabs});
 			restore_options();
 		});
 	});
 
+	$('#preisagent_entfernen').click(function() {
+		var preisagent_entfernen = $('#preisagenten').val();
+		if(!preisagent_entfernen) {
+			$('#error').html('Bitte mindestens einen Preisagent aus der Liste wählen.');
+			return;
+		}
+
+		chrome.storage.sync.get(null, function(syncStorage) {
+			var preisagenten = syncStorage['preisagenten'];
+			for(var i = 0; i < preisagent_entfernen.length; i++)
+				delete preisagenten[preisagent_entfernen[i]];
+
+			chrome.storage.sync.set({'preisagenten': preisagenten});
+			restore_options();
+		});
+	});
+
 	$('#als_standard').click(function() {
-		var tab_als_standard = $('[name=usertabs]').val();
+		var tab_als_standard = $('#usertabs').val();
 
 		if(tab_als_standard.length != 1) {
 			$('#error').html('Bitte ein Tab aus der Liste wählen.');
@@ -174,13 +206,21 @@ $(function() {
 		});
 	});
 
-	$('[name=usertabs]').mouseup(function() {
-		if($('[name=usertabs]').val()) {
+	$('#usertabs').mouseup(function() {
+		if($('#usertabs').val()) {
 			$('#tab_entfernen').prop('disabled', false);
 			$('#als_standard').prop('disabled', false);
 		} else {
 			$('#tab_entfernen').prop('disabled', true);
 			$('#als_standard').prop('disabled', true);
+		}
+	});
+
+	$('#preisagenten').mouseup(function() {
+		if($('#preisagenten').val()) {
+			$('#preisagent_entfernen').prop('disabled', false);
+		} else {
+			$('#preisagent_entfernen').prop('disabled', true);
 		}
 	});
 });

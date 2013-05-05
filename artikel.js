@@ -183,7 +183,7 @@ $(function() {
 					}
 			});
 
-			if($(window).width() - $('#diverse_infos').position().left - $('#diverse_infos').width() > 200) {
+			if($('#gh_proddesc ul li').length > 3 && $(window).width() - $('#diverse_infos').position().left - $('#diverse_infos').width() > 200) {
 				$('#gh_proddesc').css({
 					'max-width': '700px',
 					'width': '690px'
