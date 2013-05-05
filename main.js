@@ -27,7 +27,7 @@ function getvars_fuer_tab(tab) {
 	if(tab.bezugsart == 'versand') {
 		data.vl = tab.loc;
 		data.va = 'b';
-	} else {
+	} else if(tab.bezugsart == 'abholung') {
 		data.plz = tab.loc;
 	}
 

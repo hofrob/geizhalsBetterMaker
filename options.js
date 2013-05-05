@@ -21,10 +21,12 @@ function restore_options() {
 		reset_form();
 
 		$(tabs).each(function(index, value) {
+
+			var text;
 			if(allgemein.standard_tab == index)
-				var text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
+				text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
 			else
-				var text = '<option value="' + index + '">' + value.tabname + '</option>';
+				text = '<option value="' + index + '">' + value.tabname + '</option>';
 
 			$('#usertabs').append(text);
 		});
@@ -85,10 +87,10 @@ $(function() {
 	restore_options();
 
 	$('[name=bezugsart]').click(function(e) {
-		if(e.target.id == 'abholung') {
+		if(e.target.id == 'bezugsart_abholung') {
 			$('[name=abholadresse]').parent().prop('disabled', false).css('color', '#E0E2E4');
 			$('[name=versandland]').parent().prop('disabled', true).css('color', '#707070');
-		} else {
+		} else if(e.target.id == 'bezugsart_versand') {
 			$('[name=abholadresse]').parent().prop('disabled', true).css('color', '#707070');
 			$('[name=versandland]').parent().prop('disabled', false).css('color', '#E0E2E4');
 		}
@@ -119,10 +121,14 @@ $(function() {
 				bezugsart: 'abholung',
 				loc: $('#abholadresse').val()
 			};
-		} else {
+		} else if($('[name=bezugsart]:checked').val() == 'versand') {
 			newtab = {
 				bezugsart: 'versand',
 				loc: $('[name=versandland]:checked').val()
+			};
+		} else {
+			newtab = {
+				bezugsart: 'keine Bezugsart'
 			};
 		}
 
@@ -135,6 +141,8 @@ $(function() {
 
 		if(/\w+/i.test($('#tabname').val()))
 			newtab.tabname = $('#tabname').val();
+		else if(newtab.bezugsart == 'keine Bezugsart')
+			newtab.tabname = newtab.bezugsart + '; Verf: ' + newtab.verfuegbarkeit[0].toUpperCase();
 		else
 			newtab.tabname = newtab.bezugsart + ': ' + newtab.loc + '; Verf: ' + newtab.verfuegbarkeit[0].toUpperCase();
 

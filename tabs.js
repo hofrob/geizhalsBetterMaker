@@ -137,6 +137,13 @@ $(function() {
 					data: data,
 					dataType: 'html',
 					success: function(data, textStatus, jqXHR) {
+
+						important = $('#gh_important', data);
+						if(important.length) {
+							$('#preistab_inhalt' + i).append(important);
+							return;
+						}
+
 						/* [name="filterbox"] enthaelt script tag mit javascript call der uncaught reference error verursacht
 						 * $('[name="filterbox"]', data).find('script').remove() funktioniert nicht
 						 */
