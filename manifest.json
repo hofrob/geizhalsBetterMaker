@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
 
-	"name": "Geizhals bettermaker",
-	"description": "Makes Geizhals at least 3 times as better(est)",
+	"name": "Geizhals BetterMaker",
+	"description": "Makes Geizhals at least 3 times as better.",
 	"version": "1.0",
 
 	"options_page": "options.html",
