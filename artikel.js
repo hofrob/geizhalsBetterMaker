@@ -1,5 +1,7 @@
 $(function() {
 
+	$('#fs').attr('tabindex', '1');
+
 	if(!/a\d+\.html/i.test(window.location.pathname))
 		return;
 
