@@ -21,6 +21,7 @@ $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
+		var standard_tab = syncStorage['standard_tab'];
 
 		if(!tabs)
 			return;
@@ -273,7 +274,7 @@ $(function() {
 
 			}
 		});
-		if(allgemein.standard_tab)
-			$('#preistabs').tabs('option', 'active', allgemein.standard_tab + 1);
+		if(standard_tab)
+			$('#preistabs').tabs('option', 'active', standard_tab + 1);
 	});
 });

@@ -12,6 +12,7 @@ function restore_options() {
 		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
 		var preisagenten = syncStorage['preisagenten'];
+		var standard_tab = syncStorage['standard_tab'];
 
 		if(tabs && tabs.length >= 6)
 			$('#usertabs').closest('form').prop('disabled', true).css('color', '#707070');
@@ -23,7 +24,7 @@ function restore_options() {
 		$(tabs).each(function(index, value) {
 
 			var text;
-			if(allgemein.standard_tab == index)
+			if(standard_tab == index)
 				text = '<option value="' + index + '">' + value.tabname + ' (Standard)</option>';
 			else
 				text = '<option value="' + index + '">' + value.tabname + '</option>';
@@ -208,11 +209,11 @@ $(function() {
 		}
 
 		chrome.storage.sync.get(null, function(syncStorage) {
-			var allgemein = syncStorage['allgemein'];
+			var standard_tab = syncStorage['standard_tab'];
 
-			allgemein.standard_tab = tab_als_standard[0];
+			standard_tab = tab_als_standard[0];
 
-			chrome.storage.sync.set({'allgemein': allgemein});
+			chrome.storage.sync.set({'standard_tab': standard_tab});
 			restore_options();
 		});
 	});
