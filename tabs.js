@@ -20,7 +20,6 @@ $(function() {
 
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
-		var allgemein = syncStorage['allgemein'];
 		var standard_tab = syncStorage['standard_tab'];
 
 		if(!tabs)
@@ -162,13 +161,36 @@ $(function() {
 							});
 						}
 
+						if(tabs[i].preisfeld_ausmisten && tabs[i].beschreibungstext_kuerzen)
+							var preis_von = [];
+
 						if(tabs[i].beschreibungstext_kuerzen)
 							$('#preistab_inhalt' + i + ' .ty2').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
 									beschreibungstext = value.html();
 									var beschreibung_haendler = beschreibungstext.split("<p>")[0];
 									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
-									return beschreibung_haendler + '<br>' + value.find('p b')[0].innerHTML;
+
+									if(tabs[i].preis_vom_zeitdifferenz) {
+										var small = $(document.createElement('small'));
+										var stand = value.find('p b')[0].innerHTML.
+												replace(/.*(\d{2})\.(\d{2})\.(\d{4}).*(\d{2}).(\d{2}).(\d{2}).*$/,
+													'$1 $2 $3 $4 $5 $6').split(' ');
+										stand_date = new Date(stand[2], stand[1]-1, stand[0], stand[3], stand[4], stand[5]);
+										jetzt_date = new Date();
+										alter = (jetzt_date.getTime() - stand_date.getTime())/1000;
+										if(alter < 60)
+											small.html('< 1min');
+										else if(alter < 60*60)
+											small.html(Math.round(alter/60) + 'min');
+										else
+											small.html('1h+');
+
+										preis_von.push(small[0].outerHTML);
+										return beschreibung_haendler;
+									} else {
+										return beschreibung_haendler + '<br>' + small[0].outerHTML;
+									}
 								});
 							});
 
@@ -188,10 +210,15 @@ $(function() {
 										var kkimg = value.find('p').last().clone();
 
 									value.empty();
+
+									var stand = '';
+									if(tabs[i].preis_vom_zeitdifferenz)
+										stand = preis_von.shift();
+
 									if(typeof kkimg === 'undefined' || kkimg.length == 0 || /MwSt/.test(kkimg[0].innerText))
-										return preis[0].outerHTML;
+										return preis[0].outerHTML + '<br>' + stand;
 									else
-										return preis[0].outerHTML + ' ' + kkimg[0].outerHTML;
+										return preis[0].outerHTML + '<br>' + stand + ' ' + kkimg[0].outerHTML;
 								});
 							});
 							$('#preistab_inhalt' + i + ' #content_table tr th:first').css('width', '100px');
@@ -274,7 +301,7 @@ $(function() {
 
 			}
 		});
-		if(standard_tab)
+		if(typeof standard_tab != 'undefined')
 			$('#preistabs').tabs('option', 'active', standard_tab + 1);
 	});
 });

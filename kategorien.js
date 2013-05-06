@@ -8,7 +8,7 @@ $(function() {
 				'type': 'text',
 				'id': 'kat_suche',
 				'placeholder': 'Kategorien durchsuchen',
-				'tabindex': '2',
+				'tabindex': '2'
 			});
 
 			var div = $(document.createElement('div'));
@@ -43,7 +43,8 @@ $(function() {
 								var ebene1 = $.grep(data, function(value) {
 									return value.value == ebene1_id;
 								});
-								return $(document.createElement('li')).append($(document.createElement('a')).append(ebene1[0].label + ' &gt; ' + item.label)).appendTo(ul);
+								return $(document.createElement('li')).append($(document.createElement('a')).append(ebene1[0].label +
+										' &gt; ' + item.label)).appendTo(ul);
 							} else {
 								var ebene1_id = item.value.replace(/^(\d+).*$/, '$1');
 								var ebene1 = $.grep(data, function(value) {

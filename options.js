@@ -53,6 +53,7 @@ function restore_options() {
 
 function reset_form() {
 	$('[name=bezugsart]').prop('checked', false);
+	$('#bezugsart_keine').prop('checked', true);
 	$('[name=versandland]').prop('checked', false);
 	$('#abholadresse').val('');
 	$('#tabname').val('');
@@ -174,9 +175,13 @@ $(function() {
 
 		chrome.storage.sync.get(null, function(syncStorage) {
 			var tabs = syncStorage['tabs'];
+			var standard_tab = syncStorage['standard_tab'];
 
-			for(var i = 0; i < tabs_entfernen.length; i++)
+			for(var i = 0; i < tabs_entfernen.length; i++) {
 				delete tabs[tabs_entfernen[i]];
+				if(tabs_entfernen[i] == standard_tab)
+					chrome.storage.sync.remove('standard_tab');
+			}
 
 			chrome.storage.sync.set({'tabs': tabs});
 			restore_options();
@@ -208,14 +213,10 @@ $(function() {
 			return;
 		}
 
-		chrome.storage.sync.get(null, function(syncStorage) {
-			var standard_tab = syncStorage['standard_tab'];
+		standard_tab = parseInt(tab_als_standard[0]);
 
-			standard_tab = tab_als_standard[0];
-
-			chrome.storage.sync.set({'standard_tab': standard_tab});
-			restore_options();
-		});
+		chrome.storage.sync.set({'standard_tab': standard_tab});
+		restore_options();
 	});
 
 	$('#usertabs').mouseup(function() {
