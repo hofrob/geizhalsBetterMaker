@@ -147,19 +147,13 @@ $(function() {
 
 			var button = $(document.createElement('button'));
 			button.attr('type', 'button');
-			button.html('Zusatzinfos Anzeigen');
+			button.html('Zusatzinfos Ein/Ausblenden');
 
 			toggle_diverse_infos.append(button);
 			$('#diverse_infos').before(toggle_diverse_infos);
 
 			$('#toggle_diverse_infos button').click(function() {
-				if($('#diverse_infos').is(':visible')) {
-					$('#diverse_infos').hide();
-					$('#toggle_diverse_infos button').html('Zusatzinfos Anzeigen');
-				} else {
-					$('#diverse_infos').show();
-					$('#toggle_diverse_infos button').html('Verstecken');
-				}
+				$('#diverse_infos').toggle();
 			});
 
 			if($('#gh_proddesc span').is(':empty'))

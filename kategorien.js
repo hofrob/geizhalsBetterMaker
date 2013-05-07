@@ -2,6 +2,38 @@
 $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		allgemein = syncStorage['allgemein'];
+
+		if(/cat=/.test(window.location.search)) {
+			if(allgemein.kategoriesuchbox_ausblenden)
+				$('#gh_filterbox div').first().hide();
+
+			if(allgemein.kategoriefilter_ausblenden)
+				$('#xf_div tr:not(:has(.xf_sel, .xf_msel))').hide();
+
+			var div = $(document.createElement('div'));
+			div.css('float', 'left');
+
+			var button = $(document.createElement('button'));
+			button.html('Suchbox Ein/Ausblenden');
+			button.attr('id', 'suchbox_toggle');
+			div.append(button);
+
+			var button = $(document.createElement('button'));
+			button.html('Filter Ein/Ausblenden');
+			button.attr('id', 'filter_toggle');
+			div.append(button);
+
+			$('#gh_content_table_container').prepend(div);
+
+			$('#suchbox_toggle').click(function() {
+				$('#gh_filterbox div').first().toggle();
+			});
+
+			$('#filter_toggle').click(function() {
+				$('#xf_div tr:not(:has(.xf_sel, .xf_msel))').toggle();
+			});
+		}
+
 		if(allgemein.kategorie_suchfeld) {
 			var input = $(document.createElement('input'));
 			input.attr({
