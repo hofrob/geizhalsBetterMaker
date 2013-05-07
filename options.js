@@ -2,9 +2,7 @@ function restore_options() {
 	$('#error').html('');
 	$('#usertabs').empty();
 	$('#preisagenten').empty();
-	$('#tab_entfernen').prop('disabled', true);
 	$('#preisagent_entfernen').prop('disabled', true);
-	$('#als_standard').prop('disabled', true);
 	chrome.storage.sync.get(null, function(syncStorage) {
 		if(!syncStorage['dev'])
 			$('#preisagenten').closest('form').hide();
@@ -52,6 +50,8 @@ function restore_options() {
 }
 
 function reset_form() {
+	$('#usertabs').mouseup();
+	$('#tab_settings').hide();
 	$('[name=bezugsart]').prop('checked', false);
 	$('#bezugsart_keine').prop('checked', true);
 	$('[name=versandland]').prop('checked', false);
@@ -114,10 +114,24 @@ $(function() {
 		chrome.storage.sync.set({'allgemein': allgemein});
 	});
 
-	$('#tab_hinzufuegen').click(function() {
+	$('#tab_neu').click(function() {
+		$('#usertabs').val('');
+		reset_form();
+		$('#tab_bearbeiten_id').remove();
+		$('#tab_settings').show();
+	});
+
+	$('#tab_abbrechen').click(function() {
+		$('#tab_settings').hide();
+		restore_options();
+	});
+
+	$('#tab_speichern').click(function() {
 
 		if(!check_required())
 			return;
+
+		var tab_bearbeiten = $('#tab_bearbeiten_id').val();
 
 		var newtab;
 
@@ -140,9 +154,9 @@ $(function() {
 		newtab.verfuegbarkeit = $('[name=verfuegbarkeit]:checked').val();
 
 		verschoenern = $('#verschoenern > [type=checkbox]');
-		for(var i = 0; i < verschoenern.length; i++) {
+
+		for(var i = 0; i < verschoenern.length; i++)
 			newtab[$(verschoenern[i]).context.id] = $(verschoenern[i]).prop('checked');
-		}
 
 		if(/\w+/i.test($('#tabname').val()))
 			newtab.tabname = $('#tabname').val();
@@ -151,18 +165,20 @@ $(function() {
 		else
 			newtab.tabname = newtab.bezugsart + ': ' + newtab.loc + '; Verf: ' + newtab.verfuegbarkeit[0].toUpperCase();
 
-		chrome.storage.sync.get(null, function(syncStorage) {
+		chrome.storage.sync.get('tabs', function(syncStorage) {
 			var tabs = syncStorage['tabs'];
 			if(!tabs)
 				tabs = [];
 
-			if(tabs.length >= 6)
-				return;
-
-			tabs.push(newtab);
+			if(typeof tab_bearbeiten == 'undefined') {
+				if(tabs.length >= 6)
+					return;
+				tabs.push(newtab);
+			} else {
+				tabs[tab_bearbeiten] = newtab;
+			}
 			chrome.storage.sync.set({'tabs': tabs});
 			restore_options();
-			reset_form();
 		});
 	});
 
@@ -195,7 +211,7 @@ $(function() {
 			return;
 		}
 
-		chrome.storage.sync.get(null, function(syncStorage) {
+		chrome.storage.sync.get('preisagenten', function(syncStorage) {
 			var preisagenten = syncStorage['preisagenten'];
 			for(var i = 0; i < preisagent_entfernen.length; i++)
 				delete preisagenten[preisagent_entfernen[i]];
@@ -219,12 +235,59 @@ $(function() {
 		restore_options();
 	});
 
+	$('#tab_bearbeiten').click(function () {
+
+		if($('#usertabs').val().length != 1) {
+			$('#error').html('Bitte ein Tab aus der Liste wählen.');
+			return;
+		}
+
+		var tab_bearbeiten = $('#usertabs').val()[0];
+
+		chrome.storage.sync.get('tabs', function(syncStorage) {
+			var tab = syncStorage['tabs'][tab_bearbeiten];
+			$('#tab_bearbeiten_id').remove();
+			input = $(document.createElement('input'));
+			input.attr({
+				type: 'hidden',
+				id: 'tab_bearbeiten_id',
+				value: tab_bearbeiten
+			});
+			$('#usertabs').closest('fieldset').append(input);
+
+			$.each(tab, function(index, value) {
+				if(index == 'tabname')
+					$('#' + index).val(value);
+				else if(index == 'loc' && tab.bezugsart == 'abholung')
+					$('#abholadresse').val(value);
+				else if(index == 'loc' && tab.bezugsart == 'versand')
+					$('#versand_' + value).prop('checked', true).click();
+				else if(index == 'verfuegbarkeit')
+					$('#' + value).prop('checked', true).click();
+				else if(typeof value == 'boolean')
+					$('#' + index).prop('checked', value);
+				else
+					$('#' + index + '_' + value).prop('checked', true).click();
+
+			});
+			$('#tab_settings').show();
+		});
+	});
+
 	$('#usertabs').mouseup(function() {
-		if($('#usertabs').val()) {
+		var usertabs = $('#usertabs').val();
+
+		if(usertabs && $('#usertabs').val().length == 1) {
 			$('#tab_entfernen').prop('disabled', false);
+			$('#tab_bearbeiten').prop('disabled', false);
 			$('#als_standard').prop('disabled', false);
+		} else if (usertabs && $('#usertabs').val().length > 1){
+			$('#tab_entfernen').prop('disabled', false);
+			$('#tab_bearbeiten').prop('disabled', true);
+			$('#als_standard').prop('disabled', true);
 		} else {
 			$('#tab_entfernen').prop('disabled', true);
+			$('#tab_bearbeiten').prop('disabled', true);
 			$('#als_standard').prop('disabled', true);
 		}
 	});

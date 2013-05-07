@@ -62,13 +62,19 @@
 				</div>
 				<fieldset>
 					<select name="usertabs" id="usertabs" size="6" multiple></select>
-					<button id="tab_entfernen" type="button">Entfernen</button>
+					<button id="tab_bearbeiten" type="button">Bearbeiten</button>
 					<button id="als_standard" type="button">Als Standard Tab</button>
+					<button id="tab_entfernen" type="button">Entfernen</button>
+					<button id="tab_neu" type="button">Neues Tab</button>
 
 					<legend>Tab Infos</legend>
 					<label for="tabname">Titel</label>
 					<input type="text" name="tabname" id="tabname" placeholder="zB: Abh Büro, Versand (optional)" />
 				</fieldset>
+			</form>
+		</div>
+		<div class="spalte" id="tab_settings">
+			<form>
 				<fieldset id="verschoenern">
 					<legend>Verschönerungen</legend>
 					<input type="checkbox" name="vkinfo_ausblenden" value="vkinfo_ausblenden" id="vkinfo_ausblenden" />
@@ -125,7 +131,8 @@
 						<label for="kurzfristig">kurzfristig lieferbar (bis 4 Werktage)</label>
 					</div>
 				</fieldset>
-				<button id="tab_hinzufuegen" type="button">Hinzufügen</button>
+				<button id="tab_speichern" type="button">Speichern</button>
+				<button id="tab_abbrechen" type="button">Abbrechen</button>
 			</form>
 		</div>
 
