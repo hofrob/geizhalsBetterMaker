@@ -276,6 +276,7 @@ $(function() {
 
 	$('#usertabs').mouseup(function() {
 		var usertabs = $('#usertabs').val();
+		$('#tab_settings').hide();
 
 		if(usertabs && $('#usertabs').val().length == 1) {
 			$('#tab_entfernen').prop('disabled', false);
