@@ -98,7 +98,11 @@ $(function() {
 									}
 								}
 							});
+
 							$('#ghgallery img').first().click();
+							$('#artikel_thumb img').click(function() {
+								$('#ghgallery img').first().click();
+							});
 						}
 					});
 				});
