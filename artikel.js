@@ -182,8 +182,10 @@ $(function() {
 			$('#gh_proddesc').css('max-width', '500px').parent().css('max-width', '500px');
 			tooltip_anhaengen('#gh_proddesc', function(value) {
 				value = value.first();
-				value.html(value.text().replace(/•[^•]*?(k\.A\.|N\/A|keine\s*Angabe)[^•]*/g, ''));
-				return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
+				if(value.html()) {
+					value.html(value.text().replace(/•[^•]*?(k\.A\.|N\/A|keine\s*Angabe)[^•]*/g, ''));
+					return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
+				}
 			});
 
 			$('#gh_proddesc ul').css('margin', '0px');
