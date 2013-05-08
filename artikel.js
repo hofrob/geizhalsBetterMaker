@@ -108,13 +108,16 @@ $(function() {
 				});
 			} else if($('#img_wrapper').length) {
 
-				$('#gh_proddesc_right').remove();
 
 				var a = $(document.createElement('a'));
 				a.addClass('fancybox');
-				a.attr('href', $('#artikel_thumb img').attr('src'));
-				a.attr('data-fancybox-group', 'gallery');
+				a.attr({
+					'href': $('#artikel_thumb img').attr('src'),
+					'data-fancybox-group': 'gallery',
+					'title': $('#img_wrapper #p_comment').html()
+				});
 				$('#artikel_thumb img').wrap(a);
+				$('#gh_proddesc_right').remove();
 
 				$('#artikel_thumb .fancybox').fancybox({
 					helpers : {

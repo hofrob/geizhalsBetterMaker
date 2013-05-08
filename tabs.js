@@ -161,8 +161,20 @@ $(function() {
 							});
 						}
 
-						if(tabs[i].preisfeld_ausmisten && tabs[i].beschreibungstext_kuerzen)
+						if(tabs[i].preisfeld_ausmisten && tabs[i].beschreibungstext_kuerzen) {
 							var preis_von = [];
+							setInterval(function() {
+								$('#preistab_inhalt' + i + ' #content_table tr').find('td:first small:first').each(function(index, value) {
+									if(/^(&lt;\s)?\d+min$/.test($(value).html())) {
+										var min = 1 + parseInt($(value).html().replace(/^&lt;\s?(\d+)min$/, '$1'));
+										if(min > 59)
+											$(value).html('1h+');
+										else
+											$(value).html(min + 'min');
+									}
+								});
+							}, 60*1000);
+						}
 
 						if(tabs[i].beschreibungstext_kuerzen)
 							$('#preistab_inhalt' + i + ' .ty2').each(function(index, value) {
@@ -182,7 +194,7 @@ $(function() {
 										if(alter < 60)
 											small.html('< 1min');
 										else if(alter < 60*60)
-											small.html(Math.round(alter/60) + 'min');
+											small.html(Math.floor(alter/60) + 'min');
 										else
 											small.html('1h+');
 
