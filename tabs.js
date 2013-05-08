@@ -165,13 +165,8 @@ $(function() {
 							var preis_von = [];
 							setInterval(function() {
 								$('#preistab_inhalt' + i + ' #content_table tr').find('td:first small:first').each(function(index, value) {
-									if(/^(&lt;\s)?\d+min$/.test($(value).html())) {
-										var min = 1 + parseInt($(value).html().replace(/^&lt;\s?(\d+)min$/, '$1'));
-										if(min > 59)
-											$(value).html('1h+');
-										else
-											$(value).html(min + 'min');
-									}
+									var alter = errechne_alter($(value).attr('title'));
+									$(value).html(alter);
 								});
 							}, 60*1000);
 						}
@@ -184,21 +179,15 @@ $(function() {
 									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
 
 									if(tabs[i].preis_vom_zeitdifferenz) {
+										var datum = value.find('p b').text();
+										var alter = errechne_alter(datum);
+
 										var small = $(document.createElement('small'));
-										var stand = value.find('p b')[0].innerHTML.
-												replace(/.*(\d{2})\.(\d{2})\.(\d{4}).*(\d{2}).(\d{2}).(\d{2}).*$/,
-													'$1 $2 $3 $4 $5 $6').split(' ');
-										stand_date = new Date(stand[2], stand[1]-1, stand[0], stand[3], stand[4], stand[5]);
-										jetzt_date = new Date();
-										alter = (jetzt_date.getTime() - stand_date.getTime())/1000;
-										if(alter < 60)
-											small.html('< 1min');
-										else if(alter < 60*60)
-											small.html(Math.floor(alter/60) + 'min');
-										else
-											small.html('1h+');
+										small.html(alter);
+										small.attr('title', datum);
 
 										preis_von.push(small[0].outerHTML);
+
 										return beschreibung_haendler;
 									} else {
 										return beschreibung_haendler + '<br>' + small[0].outerHTML;
