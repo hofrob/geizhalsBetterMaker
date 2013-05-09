@@ -23,13 +23,11 @@ $(function() {
 
 			if ($.isEmptyObject(preisagenten)) {
 				var p = $(document.createElement('p'));
-				var b = $(document.createElement('b'));
 				var a = $(document.createElement('a'));
 				var img = $(document.createElement('img'));
 
 				img.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_on.png');
 				img.css('vertical-align', 'middle');
-				b.html('Tabs ');
 				a.html('benachrichtigt');
 				a.attr('href', '#');
 				a.click(function() {
@@ -41,7 +39,7 @@ $(function() {
 						'link': window.location.origin + window.location.pathname + '?cat=tvlcd'
 					});
 				});
-				p.append('Füge ', b, img, ' zu den Preisagenten hinzu und du wirst über Preisänderungen ', a, '.');
+				p.append('Füge <strong>Tabs</strong> ', img, ' zu den Preisagenten hinzu und du wirst über Preisänderungen ', a, '.');
 				div.append(p);
 
 			} else {
@@ -57,8 +55,8 @@ $(function() {
 					img.css('vertical-align', 'middle');
 					a.html(preisagenten[i].titel);
 					a.attr('href', window.location.origin + '/' + region + '/' + artikel);
-					p.append(img, ' ', a, '<br>letzter Bestpreis <b>€ ' + preisagenten[i].preis/100 +
-						'</b> (' + preisagenten[i].haendler + ') in Tab <b>' + tabs[tab_id].tabname + '</b>');
+					p.append(img, ' ', a, '<br>letzter Bestpreis <strong>€ ' + preisagenten[i].preis/100 +
+						'</strong> (' + preisagenten[i].haendler + ') in Tab <strong>' + tabs[tab_id].tabname + '</strong>');
 					div.append(p);
 				}
 			}
@@ -80,9 +78,7 @@ $(function() {
 
 			if($.isEmptyObject(favoriten)) {
 				var p = $(document.createElement('p'));
-				var b = $(document.createElement('b'));
-				b.html('Artikel');
-				p.append('Füge ', b, ' zu den Favoriten hinzu um sie hier direkt auswählen zu können.');
+				p.append('Füge <strong>Artikel</strong> zu den Favoriten hinzu um sie hier direkt auswählen zu können.');
 				div.append(p);
 
 			} else {

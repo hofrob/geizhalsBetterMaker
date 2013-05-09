@@ -5,6 +5,11 @@ $(function() {
 	if(!/a\d+\.html/i.test(window.location.pathname))
 		return;
 
+	chrome.runtime.sendMessage({
+		'typ': 'css',
+		'link': 'bettermaker.css'
+	});
+
 	chrome.storage.sync.get(null, function(syncStorage) {
 
 		var allgemein = syncStorage['allgemein'];
@@ -60,9 +65,9 @@ $(function() {
 				}
 
 				if(/bepixelung/.test($('#img_container').closest('a').attr('href')))
-					bildunterschrift.push('<b>powered by bepixelung.org</b>');
+					bildunterschrift.push('<strong>powered by bepixelung.org</strong>');
 				else if($('#img_wrapper #p_comment').length)
-					bildunterschrift.push('<b>' + $('#img_wrapper #p_comment').html() + '</b>');
+					bildunterschrift.push('<strong>' + $('#img_wrapper #p_comment').html() + '</strong>');
 
 				p.html(bildunterschrift.join(' - '));
 

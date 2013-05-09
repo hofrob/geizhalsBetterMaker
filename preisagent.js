@@ -105,6 +105,11 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
 chrome.runtime.onMessage.addListener(function(request, sender) {
 	if(request.typ == 'notification') {
 		notify(request);
+	} else if (request.typ == 'css') {
+		chrome.tabs.insertCSS({
+			tab: sender.tab.id,
+			file: 'bettermaker.css'
+		});
 	}
 });
 

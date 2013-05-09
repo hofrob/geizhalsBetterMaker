@@ -152,9 +152,6 @@ $(function() {
 								tooltip_anhaengen(value, function(value) {
 									value.attr('title', value.text());
 
-									if(value.attr('colspan') == 5)
-										return;
-
 									var preis = value.find('span.price').clone();
 									if(!tabs[i].kreditkartenlogos_ausblenden)
 										var kkimg = value.find('p').last().clone();
