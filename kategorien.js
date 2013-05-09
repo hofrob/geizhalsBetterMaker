@@ -1,7 +1,99 @@
 
 $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
-		allgemein = syncStorage['allgemein'];
+		var allgemein = syncStorage['allgemein'];
+		var favoriten = syncStorage['favoriten'];
+		var preisagenten = syncStorage['preisagenten'];
+
+		if(/^(\/?|\/\w{2}\/?)$/.test(window.location.pathname)) {
+
+			var div = $(document.createElement('div'));
+			var divh = $(document.createElement('div'));
+
+			div.addClass('ghinfobox');
+			divh.addClass('ghinfoboxh');
+
+			var img = $(document.createElement('img'));
+			img.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_16.png');
+			img.css('vertical-align', 'middle');
+			divh.append(img);
+			divh.append(' Preisagenten');
+			div.append(divh);
+
+			if ($.isEmptyObject(preisagenten)) {
+				var p = $(document.createElement('p'));
+				var b = $(document.createElement('b'));
+				var a = $(document.createElement('a'));
+				var img = $(document.createElement('img'));
+
+				img.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_on.png');
+				img.css('vertical-align', 'middle');
+				b.html('Tabs ');
+				a.html('benachrichtigt');
+				a.attr('href', '#');
+				a.click(function() {
+					chrome.runtime.sendMessage({
+						'typ': 'notification',
+						'icon': 'preisagent_32.png',
+						'titel': 'Preisagent Beispiel',
+						'text': 'TV 55" 4711 im Tab "Versand" ist billiger geworden: € 555,55 statt € 565,--',
+						'link': window.location.origin + window.location.pathname + '?cat=tvlcd'
+					});
+				});
+				p.append('Füge ', b, img, ' zu den Preisagenten hinzu und du wirst über Preisänderungen ', a, '.');
+				div.append(p);
+
+			} else {
+				for (var i in preisagenten) {
+					var p = $(document.createElement('p'));
+					var a = $(document.createElement('a'));
+					var img = $(document.createElement('img'));
+					var region = i.substring(0,2);
+					var artikel = i.replace(/^.*_(\d+)_.*$/, '$1');
+
+					img.attr('src', '../b/' + region + '.png');
+					img.css('vertical-align', 'middle');
+					a.html(preisagenten[i].titel);
+					a.attr('href', window.location.origin + '/' + region + '/' + artikel);
+					p.append(img, ' ', a, '<br>letzter Bestpreis € ' + preisagenten[i].preis/100 +
+						' (' + preisagenten[i].haendler + ') in Tab "' + preisagenten[i].tabname + '"');
+					div.append(p);
+				}
+			}
+
+			$('#gh_blah').prepend(div);
+
+			var div = $(document.createElement('div'));
+			var divh = $(document.createElement('div'));
+
+			div.addClass('ghinfobox');
+			divh.addClass('ghinfoboxh');
+
+			var img = $(document.createElement('img'));
+			img.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_hell.png');
+			img.css('vertical-align', 'middle');
+			divh.append(img);
+			divh.append(' Favoriten');
+			div.append(divh);
+
+			if($.isEmptyObject(favoriten)) {
+				var p = $(document.createElement('p'));
+				var b = $(document.createElement('b'));
+				b.html('Artikel');
+				p.append('Füge ', b, ' zu den Favoriten hinzu um sie hier direkt auswählen zu können.');
+				div.append(p);
+
+			} else {
+				for(var i in favoriten) {
+					var a = $(document.createElement('a'));
+					a.html(favoriten[i].titel);
+					a.attr('href', './' + i);
+					div.append(a, '<br>');
+				}
+			}
+
+			$('#gh_blah').prepend(div);
+		}
 
 		if(/cat=/.test(window.location.search)) {
 			if(allgemein.kategoriesuchbox_ausblenden)

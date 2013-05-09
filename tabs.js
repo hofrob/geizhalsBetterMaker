@@ -21,6 +21,8 @@ $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
 		var standard_tab = syncStorage['standard_tab'];
+		var preisagenten = syncStorage['preisagenten'];
+		var artikel = window.location.pathname.replace(/^.*a(\d+)\.html.*$/i, '$1');
 
 		if(!tabs)
 			return;
@@ -30,105 +32,52 @@ $(function() {
 		$('#preistabs').prepend('<ul><li><a href="#allepreise">Alle Preise</a></li></ul>');
 
 		for(var i = 0; i < tabs.length; i++) {
-			$('#preistabs ul').append('<li><a href="#preistab_inhalt' + i + '">' + tabs[i].tabname + ' </a></li>');
+			$('#preistabs ul').append('<li><a href="#preistab_inhalt' + i + '">' + tabs[i].tabname + '&nbsp;</a></li>');
 			$('#preistabs').append('<div id="preistab_inhalt' + i + '" />');
 		}
 
 		$('#preistabs').tabs({
-			activate: function(event, ui) {
+			activate: function() {
 
 				var i = $('#preistabs').tabs("option", "active") - 1;
 
-				if(syncStorage['dev'] && i >= 0) {
-					var img = $(document.createElement('img'));
-					img.attr('src', '//geizhals.at/b/cog2.png');
-					img.css({
-						'vertical-align': 'middle',
-						'cursor': 'pointer'
+				$('#preisagent').remove();
+				if(i < 0)
+					return;
+
+				var div = $(document.createElement('div'));
+				div.attr('id', 'preisagent');
+				div.data({tab: i});
+
+				if(preisagenten[get_region() + '_' + artikel + '_' + i])
+					div.addClass('aktiv');
+
+				$('#preistabs ul li:nth-child(' + eval(i+2) + ') a').append(div);
+
+				$('#preisagent').click(function() {
+					$('#preisagent').toggleClass('aktiv');
+					chrome.storage.sync.get('preisagenten', function(syncStorage) {
+
+						var preisagenten = syncStorage['preisagenten'];
+						var tab_id = $('#preisagent').data().tab;
+
+						if($('#preisagent.aktiv').length) {
+
+							preisagenten[get_region() + '_' + artikel + '_' + tab_id] = {
+								'titel': $('h1 span:first').text(),
+								'preis': parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10),
+								'haendler': $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) b:first').text(),
+								'tabname': tabs[tab_id].tabname
+							};
+							chrome.storage.sync.set({'preisagenten': preisagenten});
+						} else {
+							delete preisagenten[preisagent_index = get_region() + '_' + artikel + '_' + tab_id];
+							chrome.storage.sync.set({'preisagenten': preisagenten});
+						}
 					});
-					$('#preistabs ul li:nth-child(' + eval(i+2) + ') a').append(img);
-					$('#preistabs ul li:nth-child(' + eval(i+2) + ') img').click(function() {
+				});
 
-						var tab = $(this).parent().attr('href').replace(/#preistab_inhalt(\d+)$/, '$1');
-						var div = $(document.createElement('div'));
-						div.attr('id', '#tabsettings');
-
-						var input = $(document.createElement('input'));
-						input.attr({
-							type: 'hidden',
-							name: 'url',
-							id: 'preisagent_url',
-							value: window.location.origin + window.location.pathname + '?' + $.param(getvars_fuer_tab(tabs[i]))
-						});
-						div.append(input);
-
-						var bestpreis = parseFloat($('#preistab_inhalt' + tab + ' #content_table span.price').first().html().replace(/,/, '.'));
-
-						var input = $(document.createElement('input'));
-						input.attr({
-							type: 'text',
-							name: 'preisagent_limit',
-							id: 'preisagent_limit',
-							value: bestpreis
-						});
-						div.append(input);
-
-						var input = $(document.createElement('input'));
-						input.attr({
-							type: 'hidden',
-							name: 'preisagent_tab',
-							id: 'preisagent_tab',
-							value: tab
-						});
-						div.append(input);
-
-						$('body').append(div);
-						div.dialog({
-							autoOpen: false,
-							height: 150,
-							width: 300,
-							modal: true,
-							buttons: {
-								Ok: function() {
-									var preisagent = {
-										url: $('#preisagent_url').val(),
-										limit: $('#preisagent_limit').val(),
-										tab: $('#preisagent_tab').val(),
-										name: '€ ' + $('#preisagent_limit').val() + ' "' + $('h1 span:first').text() + '"',
-										aktiv: true
-									};
-
-									chrome.storage.sync.get('preisagenten', function(syncStorage) {
-										var preisagenten = syncStorage['preisagenten'];
-
-										for(var i = 0; i < preisagenten.length; i++) {
-											if(preisagenten[i].tab == preisagent.tab && preisagenten[i].url == preisagent.url) {
-												delete preisagenten[i];
-												break;
-											}
-										}
-
-										preisagenten.push(preisagent);
-										chrome.storage.sync.set({'preisagenten': preisagenten});
-									});
-
-									$(this).dialog('close');
-									div.dialog('destroy');
-									div.remove();
-								},
-								Abbrechen: function() {
-									$(this).dialog('close');
-									div.dialog('destroy');
-									div.remove();
-								}
-							}
-						});
-						div.dialog('open');
-					});
-				}
-				$('#preistabs ul li:gt(' + eval(i+1) + '),#preistabs ul li:lt(' + eval(i+1) + ')').find('img').remove();
-
-				if($('#preistab_inhalt' + i + ' #content_table').length > 0 || i < 0)
+				if($('#preistab_inhalt' + i + ' #content_table').length > 0)
 					return;
 
 				data = getvars_fuer_tab(tabs[i]);
@@ -177,6 +126,7 @@ $(function() {
 									beschreibungstext = value.html();
 									var beschreibung_haendler = beschreibungstext.split("<p>")[0];
 									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
+									beschreibung_haendler = beschreibung_haendler.substring(0,250);
 
 									if(tabs[i].preis_vom_zeitdifferenz) {
 										var datum = value.find('p b').text();
@@ -199,7 +149,7 @@ $(function() {
 							$('#preistab_inhalt' + i + ' div.gh_hl1').remove();
 
 						if(tabs[i].preisfeld_ausmisten) {
-							$('#preistab_inhalt' + i + ' #content_table tr').find('td:first').each(function(index, value) {
+							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(1)').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
 									value.attr('title', value.text());
 
@@ -302,7 +252,10 @@ $(function() {
 
 			}
 		});
-		if(typeof standard_tab != 'undefined')
+		console.log(tab_aktivieren);
+		if(typeof tab_aktivieren == 'function')
+			$('#preistabs').tabs('option', 'active', tab_aktivieren() + 1);
+		else if(typeof standard_tab != 'undefined')
 			$('#preistabs').tabs('option', 'active', standard_tab + 1);
 	});
 });

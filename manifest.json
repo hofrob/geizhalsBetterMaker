@@ -15,7 +15,8 @@
 		"css": [
 			"jquery-ui-1.10.3.custom.min.css",
 			"jquery.fancybox.css",
-			"jquery.fancybox-thumbs.css"
+			"jquery.fancybox-thumbs.css",
+			"bettermaker.css"
 		],
 		"js": [
 			"jquery-2.0.0.min.js",
@@ -34,10 +35,18 @@
 			"jquery-2.0.0.min.js",
 			"main.js",
 			"preisagent.js"
-		]
+		],
+		"persistent": false
 	},
 	"web_accessible_resources": [
 		"images/blank.gif",
+		"images/stern_hover.png",
+		"images/stern_hell.png",
+		"images/stern_leer.png",
+		"images/preisagent_16.png",
+		"images/preisagent_32.png",
+		"images/preisagent_on.png",
+		"images/preisagent_off.png",
 		"images/fancybox_sprite.png",
 		"images/fancybox_loading.gif",
 		"images/fancybox_overlay.png",
@@ -63,6 +72,7 @@
 		"http://*.geizhals.de/*",
 		"http://*.geizhals.eu/*",
 		"storage",
-		"notifications"
+		"notifications",
+		"alarms"
 	]
 }

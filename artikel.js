@@ -8,12 +8,38 @@ $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 
 		var allgemein = syncStorage['allgemein'];
-		var artikel = $(location).attr('pathname').replace(/.*a(\d+)\.html.*/i, '$1');
+		var artikel = window.location.pathname.replace(/^.*a(\d+)\.html.*$/i, '$1');
+		var favoriten = syncStorage['favoriten'];
 
 		if(allgemein.immer_tabs_laden && (window.location.search || window.location.hash)) {
 			window.location = window.location.pathname;
 			return;
 		}
+
+		var div = $(document.createElement('div'));
+		div.attr('id', 'favorit');
+		if(favoriten[artikel])
+			div.addClass('aktiv');
+
+		$('#monav').prepend(div);
+
+		$('#favorit').click(function() {
+			$('#favorit').toggleClass('aktiv');
+			chrome.storage.sync.get('favoriten', function(syncStorage) {
+
+				var favoriten = syncStorage['favoriten'];
+
+				if($('#favorit.aktiv').length) {
+					favoriten[artikel] = {
+						'titel': $('h1 span:first').text()
+					};
+					chrome.storage.sync.set({'favoriten': favoriten});
+				} else {
+					delete favoriten[artikel];
+					chrome.storage.sync.set({'favoriten': favoriten});
+				}
+			});
+		});
 
 		if(allgemein.bilder_gallerie) {
 
@@ -177,7 +203,7 @@ $(function() {
 				$('#diverse_infos').toggle();
 			});
 
-			if($('#gh_proddesc span').is(':empty'))
+			if(!/\w/.test($('#gh_proddesc span').text()))
 				$('#gh_proddesc').remove();
 		}
 

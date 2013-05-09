@@ -34,15 +34,6 @@ function restore_options() {
 		for(var i=0; i < cb.length; i++)
 			$('#' + cb[i]).prop('checked', allgemein[cb[i]]);
 
-		if(preisagenten.length < 6)
-			$('#preisagenten').attr('size', '6');
-		else
-			$('#preisagenten').attr('size', preisagenten.length.toString());
-
-		$(preisagenten).each(function(index, value) {
-			var text = '<option value="' + index + '">' + value.name + '</option>';
-			$('#preisagenten').append(text);
-		});
 	});
 	chrome.storage.local.get(null, function(syncStorage) {
 		console.log(syncStorage);
@@ -229,7 +220,7 @@ $(function() {
 			return;
 		}
 
-		standard_tab = parseInt(tab_als_standard[0]);
+		standard_tab = parseInt(tab_als_standard[0], 10);
 
 		chrome.storage.sync.set({'standard_tab': standard_tab});
 		restore_options();

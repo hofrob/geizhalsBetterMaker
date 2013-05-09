@@ -1,9 +1,26 @@
-var dev = false;
 
-chrome.storage.sync.get('dev', function(syncStorage) {
-	if(syncStorage.dev)
-		dev = syncStorage.dev;
-});
+function get_region() {
+
+	if($('#gh_flags_search').children('img').length == 1) {
+
+		var aktive_flagge = $('#gh_flags_search').children('img').attr('src');
+
+		if(/austria\.gif/.test(aktive_flagge))
+			return 'at';
+
+		else if(/germany\.gif/.test(aktive_flagge))
+			return 'de';
+
+		else if(/UK\.gif/.test(aktive_flagge))
+			return 'uk';
+
+		else if(/pol\.gif/.test(aktive_flagge))
+			return 'pl';
+	}
+
+	// Fallback: EU
+	return 'eu';
+}
 
 function tooltip_anhaengen(value, aufraeumen) {
 	value = $(value);
