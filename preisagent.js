@@ -106,8 +106,8 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 	if(request.typ == 'notification') {
 		notify(request);
 	} else if (request.typ == 'css') {
-		chrome.tabs.insertCSS({
-			tab: sender.tab.id,
+		console.log(sender);
+		chrome.tabs.insertCSS(sender.tab.id, {
 			file: 'bettermaker.css'
 		});
 	}
