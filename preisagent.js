@@ -81,7 +81,7 @@ function check_preisagenten() {
 									'typ': 'notification',
 									'icon': 'preisagent_32.png',
 									'titel': 'Preisagent für "' + preisagenten[i].titel + '"',
-									'text': 'Preis ist im Tab "' + tabs[tab_id] + '" um € ' + differenz + aenderung + '. \n\
+									'text': 'Preis ist im Tab "' + tabs[tab_id].tabname + '" um € ' + differenz + aenderung + '. \n\
 										Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ') \n\
 										Nachher: € ' + preis/100 + ' (' + haendler + ')',
 									'link': url,
