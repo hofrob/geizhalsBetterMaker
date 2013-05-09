@@ -15,7 +15,8 @@
 		"css": [
 			"jquery-ui-1.10.3.custom.min.css",
 			"jquery.fancybox.css",
-			"jquery.fancybox-thumbs.css"
+			"jquery.fancybox-thumbs.css",
+			"bettermaker.css"
 		],
 		"js": [
 			"jquery-2.0.0.min.js",

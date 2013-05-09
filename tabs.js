@@ -150,6 +150,10 @@ $(function() {
 						if(tabs[i].preisfeld_ausmisten) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(1)').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
+
+									if(value.attr('colspan') == 5)
+										return;
+
 									value.attr('title', value.text());
 
 									var preis = value.find('span.price').clone();
@@ -174,6 +178,10 @@ $(function() {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(3)').each(function(index, value) {
 
 								tooltip_anhaengen(value, function(value) {
+
+									if(value.attr('colspan') == 5)
+										return;
+
 									var a = value.find('a').first().clone();
 									if(/hat keine g.ltigen bewertungen/i.test(value.text())) {
 										a.html('keine Bewertungen');
@@ -209,6 +217,10 @@ $(function() {
 						if(tabs[i].haendlerlink_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
+
+									if(value.attr('colspan') == 5)
+										return;
+
 									if(value.find('img:first.hlflg').length)
 										var haendlerlink = value.find('img:first.hlflg').clone()[0].outerHTML;
 									else

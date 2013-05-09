@@ -5,11 +5,6 @@ $(function() {
 	if(!/a\d+\.html/i.test(window.location.pathname))
 		return;
 
-	chrome.runtime.sendMessage({
-		'typ': 'css',
-		'link': 'bettermaker.css'
-	});
-
 	chrome.storage.sync.get(null, function(syncStorage) {
 
 		var allgemein = syncStorage['allgemein'];

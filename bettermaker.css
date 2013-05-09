@@ -36,23 +36,23 @@
 	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_off.png);
 }
 
-#content_table tr.t1 td:nth-child(1) {
+#preistabs tr.t1 td:nth-child(1) {
 	width: 70px;
 }
 
-#content_table tr.t1 td:nth-child(2) {
+#preistabs tr.t1 td:nth-child(2) {
 	width: 160px;
 }
 
-#content_table tr.t1 td:nth-child(3) {
+#preistabs tr.t1 td:nth-child(3) {
 	width: 120px;
 }
 
-#content_table tr.t1 td:nth-child(4) {
+#preistabs tr.t1 td:nth-child(4) {
 	width: 90px;
 }
 
-#content_table .av_inl {
+#preistabs .av_inl {
 	height: auto;
 }
 
