@@ -252,7 +252,6 @@ $(function() {
 
 			}
 		});
-		console.log(tab_aktivieren);
 		if(typeof tab_aktivieren == 'function')
 			$('#preistabs').tabs('option', 'active', tab_aktivieren() + 1);
 		else if(typeof standard_tab != 'undefined')
