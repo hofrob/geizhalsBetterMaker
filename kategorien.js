@@ -1,6 +1,7 @@
 
 $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
+		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
 		var favoriten = syncStorage['favoriten'];
 		var preisagenten = syncStorage['preisagenten'];
@@ -50,13 +51,14 @@ $(function() {
 					var img = $(document.createElement('img'));
 					var region = i.substring(0,2);
 					var artikel = i.replace(/^.*_(\d+)_.*$/, '$1');
+					var tab_id = i.replace(/^.*_(\d+)$/, '$1');
 
 					img.attr('src', '../b/' + region + '.png');
 					img.css('vertical-align', 'middle');
 					a.html(preisagenten[i].titel);
 					a.attr('href', window.location.origin + '/' + region + '/' + artikel);
 					p.append(img, ' ', a, '<br>letzter Bestpreis € ' + preisagenten[i].preis/100 +
-						' (' + preisagenten[i].haendler + ') in Tab "' + preisagenten[i].tabname + '"');
+						' (' + preisagenten[i].haendler + ') in Tab "' + tabs[tab_id].tabname + '"');
 					div.append(p);
 				}
 			}
