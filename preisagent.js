@@ -62,7 +62,7 @@ function check_preisagenten() {
 							var preis = parseInt($('#content_table span.price:first', data).html().replace(/,/, '').replace(/\-\-/, '00'), 10);
 							if(preis != preisagenten[i].preis) {
 
-								var haendler = $('#content_table tr.t1:first td:nth-child(2) b', data).text();
+								var haendler = $('#content_table tr.t1:first td:nth-child(2) a:first', data).text();
 								chrome.storage.sync.get('preisagenten', function(syncStorage) {
 									var preisagenten = syncStorage['preisagenten'];
 									preisagenten[i].preis = preis;

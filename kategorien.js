@@ -57,8 +57,8 @@ $(function() {
 					img.css('vertical-align', 'middle');
 					a.html(preisagenten[i].titel);
 					a.attr('href', window.location.origin + '/' + region + '/' + artikel);
-					p.append(img, ' ', a, '<br>letzter Bestpreis € ' + preisagenten[i].preis/100 +
-						' (' + preisagenten[i].haendler + ') in Tab "' + tabs[tab_id].tabname + '"');
+					p.append(img, ' ', a, '<br>letzter Bestpreis <b>€ ' + preisagenten[i].preis/100 +
+						'</b> (' + preisagenten[i].haendler + ') in Tab <b>' + tabs[tab_id].tabname + '</b>');
 					div.append(p);
 				}
 			}

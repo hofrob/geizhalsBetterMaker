@@ -66,7 +66,7 @@ $(function() {
 							preisagenten[get_region() + '_' + artikel + '_' + tab_id] = {
 								'titel': $('h1 span:first').text(),
 								'preis': parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10),
-								'haendler': $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) b:first').text(),
+								'haendler': $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) a:first').text()
 							};
 							chrome.storage.sync.set({'preisagenten': preisagenten});
 						} else {
