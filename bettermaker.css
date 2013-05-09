@@ -35,3 +35,65 @@
 #preisagent.aktiv {
 	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_off.png);
 }
+
+#content_table tr.t1 td:nth-child(1) {
+	width: 70px;
+}
+
+#content_table tr.t1 td:nth-child(2) {
+	width: 160px;
+}
+
+#content_table tr.t1 td:nth-child(3) {
+	width: 120px;
+}
+
+#content_table tr.t1 td:nth-child(4) {
+	width: 90px;
+}
+
+#content_table .av_inl {
+	height: auto;
+}
+
+#artikel_thumb {
+	float: left;
+}
+
+#artikel_thumb img {
+	padding: 0px 5px;
+	cursor: pointer;
+}
+
+#artikel_thumb p {
+	text-align: center;
+	margin: 0px;
+	height: auto;
+}
+
+#ghgallery {
+	float: left;
+	display: none;
+}
+
+#diverse_infos {
+	float: left;
+	width: 500px;
+	max-height: 150px;
+	overflow: auto;
+}
+
+#gh_proddesc, #gh_proddesc_left {
+	max-width: 500px;
+}
+
+#gh_proddesc ul {
+	margin: 0;
+	padding-left: 30px;
+}
+
+.ui-autocomplete {
+	max-height: 600px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}

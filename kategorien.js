@@ -187,11 +187,6 @@ $(function() {
 										' &gt; ' + item.label)).appendTo(ul);
 							}
 						};
-						$('.ui-autocomplete').css({
-							'max-height': '600px',
-							'overflow-y': 'auto',
-							'overflow-x': 'hidden'
-						});
 					}
 				});
 			});

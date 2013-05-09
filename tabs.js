@@ -171,7 +171,6 @@ $(function() {
 										return preis[0].outerHTML + '<br>' + stand + ' ' + kkimg[0].outerHTML;
 								});
 							});
-							$('#preistab_inhalt' + i + ' #content_table tr th:first').css('width', '100px');
 						}
 
 						if(tabs[i].bewertungsinfo_kuerzen) {
@@ -190,11 +189,9 @@ $(function() {
 									return a[0].outerHTML;
 								});
 							});
-							$('#preistab_inhalt' + i + ' #content_table tr th:nth-child(3)').css('width', '120px');
 						}
 
 						if(tabs[i].lagerstand_kuerzen) {
-							$('#preistab_inhalt' + i + ' #content_table .av_inl').css('height', 'auto');
 							$('#preistab_inhalt' + i + ' #content_table div.av_l').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
 									return 'lagernd';
@@ -210,7 +207,6 @@ $(function() {
 									return '4+ Werktage';
 								});
 							});
-							$('#preistab_inhalt' + i + ' #content_table tr.t1:first td:nth-child(4)').css('width', '90px');
 						}
 
 						if(tabs[i].haendlerlink_kuerzen) {
@@ -236,9 +232,6 @@ $(function() {
 						if(tabs[i].spaltenueberschriften_ausblenden)
 							$('#preistab_inhalt' + i + ' #content_table tr:lt(2)').hide();
 
-						$('#preistab_inhalt' + i + ' #content_table th:nth-child(2)').css('width', '160px');
-						$('#preistab_inhalt' + i + ' #content_table tr.t1:first td:nth-child(2)').css('width', '160px');
-						$('#preistab_inhalt' + i + ' #content_table tr.t1:first td:nth-child(1)').css('width', '70px');
 						$('#preistab_inhalt' + i).tooltip({
 								track: true,
 								items: '.tooltip',

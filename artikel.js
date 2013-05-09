@@ -47,12 +47,8 @@ $(function() {
 
 				var img_url = $('#img_container img,#img_container_noresize img').attr('src');
 				var img = $(document.createElement('img'));
-				img.attr('src', img_url).css({
-					'padding': '0px 5px',
-					'cursor': 'pointer'
-				});
+				img.attr('src', img_url);
 				var div = $(document.createElement('div'));
-				div.css('float', 'left');
 				div.attr('id', 'artikel_thumb');
 				div.append(img);
 
@@ -69,11 +65,6 @@ $(function() {
 					bildunterschrift.push('<b>' + $('#img_wrapper #p_comment').html() + '</b>');
 
 				p.html(bildunterschrift.join(' - '));
-				p.css({
-					'text-align': 'center',
-					'margin': '0px',
-					'height': 'auto'
-				});
 
 				div.append(p);
 				$('#gh_proddesc_left').after(div);
@@ -91,10 +82,6 @@ $(function() {
 						success: function(data) {
 							var gallery = $(document.createElement('div'));
 							gallery.attr('id', 'ghgallery');
-							gallery.css({
-								'float': 'left',
-								'display': 'none'
-							});
 
 							for(var i = 0; i < $('div.morepix', data).length; i++) {
 								var value = $('div.morepix', data)[i];
@@ -179,14 +166,9 @@ $(function() {
 			var diverse_infos = $(document.createElement('div'));
 			diverse_infos.hide();
 			diverse_infos.attr('id', 'diverse_infos');
-			diverse_infos.css('float', 'left');
-			diverse_infos.css('width', '500px');
 			diverse_infos.append($('#gh_proddesc p'));
 			diverse_infos.append($('#gh_prod_misc_controls'));
 			diverse_infos.append($('#gh_artstuff'));
-			diverse_infos.css('max-height', '150px');
-			diverse_infos.css('overflow', 'auto');
-			diverse_infos.css('width', '600px');
 			$('#gh_artbox').append(diverse_infos);
 
 			var toggle_diverse_infos = $(document.createElement('div'));
@@ -208,7 +190,6 @@ $(function() {
 		}
 
 		if(allgemein.produktbeschreibung_verschoenern) {
-			$('#gh_proddesc').css('max-width', '500px').parent().css('max-width', '500px');
 			tooltip_anhaengen('#gh_proddesc', function(value) {
 				value = value.first();
 				if(value.html()) {
@@ -216,9 +197,6 @@ $(function() {
 					return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
 				}
 			});
-
-			$('#gh_proddesc ul').css('margin', '0px');
-			$('#gh_proddesc ul').css('padding-left', '30px');
 
 			$(document).tooltip({
 					track: true,
