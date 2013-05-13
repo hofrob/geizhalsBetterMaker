@@ -97,3 +97,12 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 }
+
+#haendler_ausblenden {
+	width: 16px;
+	height: 16px;
+	float: right;
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/entfernen.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+}

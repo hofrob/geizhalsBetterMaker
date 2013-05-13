@@ -21,7 +21,6 @@ $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var tabs = syncStorage['tabs'];
 		var standard_tab = syncStorage['standard_tab'];
-		var preisagenten = syncStorage['preisagenten'];
 		var artikel = window.location.pathname.replace(/^.*a(\d+)\.html.*$/i, '$1');
 
 		if(!tabs)
@@ -45,34 +44,39 @@ $(function() {
 				if(i < 0)
 					return;
 
-				var div = $(document.createElement('div'));
-				div.attr('id', 'preisagent');
-				div.data({tab: i});
+				chrome.storage.sync.get('preisagenten', function(syncStorage) {
 
-				if(preisagenten[get_region() + '_' + artikel + '_' + i])
-					div.addClass('aktiv');
+					var preisagenten = syncStorage['preisagenten'];
+					var div = $(document.createElement('div'));
 
-				$('#preistabs ul li:nth-child(' + eval(i+2) + ') a').append(div);
+					div.attr('id', 'preisagent');
+					div.data({tab: i});
 
-				$('#preisagent').click(function() {
-					$('#preisagent').toggleClass('aktiv');
-					chrome.storage.sync.get('preisagenten', function(syncStorage) {
+					if(preisagenten[get_region() + '_' + artikel + '_' + i])
+						div.addClass('aktiv');
 
-						var preisagenten = syncStorage['preisagenten'];
-						var tab_id = $('#preisagent').data().tab;
+					$('#preistabs ul li:nth-child(' + eval(i+2) + ') a').append(div);
 
-						if($('#preisagent.aktiv').length) {
+					$('#preisagent').click(function() {
+						$('#preisagent').toggleClass('aktiv');
+						chrome.storage.sync.get('preisagenten', function(syncStorage) {
 
-							preisagenten[get_region() + '_' + artikel + '_' + tab_id] = {
-								'titel': $('h1 span:first').text(),
-								'preis': parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10),
-								'haendler': $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) a:first').text()
-							};
-							chrome.storage.sync.set({'preisagenten': preisagenten});
-						} else {
-							delete preisagenten[preisagent_index = get_region() + '_' + artikel + '_' + tab_id];
-							chrome.storage.sync.set({'preisagenten': preisagenten});
-						}
+							var preisagenten = syncStorage['preisagenten'];
+							var tab_id = $('#preisagent').data().tab;
+
+							if($('#preisagent.aktiv').length) {
+
+								preisagenten[get_region() + '_' + artikel + '_' + tab_id] = {
+									'titel': $('h1 span:first').text(),
+									'preis': parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10),
+									'haendler': $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) a:first').text()
+								};
+								chrome.storage.sync.set({'preisagenten': preisagenten});
+							} else {
+								delete preisagenten[preisagent_index = get_region() + '_' + artikel + '_' + tab_id];
+								chrome.storage.sync.set({'preisagenten': preisagenten});
+							}
+						});
 					});
 				});
 
@@ -218,6 +222,11 @@ $(function() {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
 								tooltip_anhaengen(value, function(value) {
 
+//									value.find('a img').removeClass();
+//
+//									var div = $(document.createElement('div'));
+//									div.attr('id', 'haendler_ausblenden');
+//
 									if(value.attr('colspan') == 5)
 										return;
 
@@ -225,6 +234,8 @@ $(function() {
 										var haendlerlink = value.find('img:first.hlflg').clone()[0].outerHTML;
 									else
 										var haendlerlink = '';
+//									if(value.find('img:first.hlflg').length)
+//										haendlerlink = value.find('img:first.hlflg').clone()[0].outerHTML;
 
 									haendlerlink = haendlerlink.concat(value.find('a').clone()[0].outerHTML);
 									if(tabs[i].bezugsart == 'abholung') {
@@ -232,6 +243,7 @@ $(function() {
 										value.find('a:last').html('Karte');
 										haendlerlink = haendlerlink.concat(value.find('a:last')[0].outerHTML);
 									}
+//									return div[0].outerHTML + haendlerlink;
 									return haendlerlink;
 								});
 							});

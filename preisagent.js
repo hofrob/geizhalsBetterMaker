@@ -58,8 +58,12 @@ function check_preisagenten() {
 						url: url,
 						data: data,
 						dataType: 'html',
+						cache: false,
+						dataFilter: function(data) {
+							return data.replace(/<img\b[^>]*>/ig, '');
+						},
 						success: function(data) {
-							var preis = parseInt($('#content_table span.price:first', data).html().replace(/,/, '').replace(/\-\-/, '00'), 10);
+							var preis = parseInt($('#content_table span.price:first', data).text().replace(/,/, '').replace(/\-\-/, '00'), 10);
 							if(preis != preisagenten[i].preis) {
 
 								var haendler = $('#content_table tr.t1:first td:nth-child(2) a:first', data).text();
@@ -103,13 +107,31 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender) {
+
 	if(request.typ == 'notification') {
 		notify(request);
+	} else if(request.typ == 'url_tab_aktivieren') {
+		if(request.neues_chrome_tab)
+			chrome.tabs.create({
+				url: request.link,
+				active: false,
+				index: sender.tab.index + 1
+			}, function(tab) {
+				chrome.tabs.executeScript(tab.id, {
+					code: 'function tab_aktivieren() { return ' + request.tab_id + ' }'
+				});
+			});
+		else
+			chrome.tabs.update({url: request.link}, function(tab) {
+				chrome.tabs.executeScript(tab.id, {
+					code: 'function tab_aktivieren() { return ' + request.tab_id + ' }'
+				});
+			});
 	}
 });
 
 chrome.alarms.create('preisagent_check', {
-	'delayInMinutes': 0,
+	'delayInMinutes': 2,
 	'periodInMinutes': 20
 });
 
