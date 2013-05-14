@@ -106,3 +106,9 @@
 	background-repeat: no-repeat;
 	cursor: pointer;
 }
+
+.flag_links {
+	float: left;
+	overflow: visible;
+	width: 0;
+}

@@ -190,7 +190,7 @@ $(function() {
 		}
 
 		if(allgemein.produktbeschreibung_verschoenern) {
-			tooltip_anhaengen('#gh_proddesc', function(value) {
+			tooltip_anhaengen('#gh_proddesc', 's', function(value) {
 				value = value.first();
 				if(value.html()) {
 					value.html(value.text().replace(/•[^•]*?(k\.A\.|N\/A|keine\s*Angabe)[^•]*/g, ''));

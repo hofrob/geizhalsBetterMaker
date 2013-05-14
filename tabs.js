@@ -66,10 +66,22 @@ $(function() {
 
 							if($('#preisagent.aktiv').length) {
 
+								var preis_span = $('#preistab_inhalt' + tab_id + ' span.price:first');
+								var preis, haendler;
+
+								if(preis_span.length) {
+									preis = parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10);
+									haendler = $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) a:first').text();
+								} else {
+									preis = '--';
+									haendler = '--';
+								}
+
 								preisagenten[get_region() + '_' + artikel + '_' + tab_id] = {
 									'titel': $('h1 span:first').text(),
-									'preis': parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10),
-									'haendler': $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) a:first').text()
+									'preis': preis,
+									'haendler': haendler,
+									'uhrzeit': Date.now()
 								};
 								chrome.storage.sync.set({'preisagenten': preisagenten});
 							} else {
@@ -105,13 +117,46 @@ $(function() {
 						if(tabs[i].filterbox_ausblenden)
 							$('#preistab_inhalt' + i + ' #gh_afilterbox').hide();
 
-						if(tabs[i].vkinfo_ausblenden) {
+						if(tabs[i].vkinfo_ausblenden && tabs[i].lagerstand_kuerzen) {
+							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(4)').each(function(index, value) {
+								tooltip_anhaengen(value, 'e', function(value) {
+									value.find('div.vk_inl').remove();
+									var lagerstand = value.find('.av_inl');
+
+									if(lagerstand.hasClass('av_l'))
+										lagerstand.html('lagernd');
+									else if(lagerstand.hasClass('av_k'))
+										lagerstand.html('bis 4 Werktage');
+									else
+										lagerstand.html('4+ Werktage');
+
+									return value.html();
+								});
+							});
+						} else if(tabs[i].vkinfo_ausblenden) {
 							$('#preistab_inhalt' + i + ' div.vk_inl').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
+								tooltip_anhaengen(value, 'e', function(value) {
 									return 'Versandkosten';
 								});
 							});
+						} else if(tabs[i].lagerstand_kuerzen) {
+							$('#preistab_inhalt' + i + ' #content_table div.av_l').each(function(index, value) {
+								tooltip_anhaengen(value, 'e', function(value) {
+									return 'lagernd';
+								});
+							});
+							$('#preistab_inhalt' + i + ' #content_table div.av_k').each(function(index, value) {
+								tooltip_anhaengen(value, 'e', function(value) {
+									return 'bis 4 Werktage';
+								});
+							});
+							$('#preistab_inhalt' + i + ' #content_table div.av_e').each(function(index, value) {
+								tooltip_anhaengen(value, 'e', function(value) {
+									return '4+ Werktage';
+								});
+							});
 						}
+
 
 						if(tabs[i].preisfeld_ausmisten && tabs[i].beschreibungstext_kuerzen) {
 							var preis_von = [];
@@ -125,7 +170,7 @@ $(function() {
 
 						if(tabs[i].beschreibungstext_kuerzen)
 							$('#preistab_inhalt' + i + ' .ty2').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
+								tooltip_anhaengen(value, 's', function(value) {
 									beschreibungstext = value.html();
 									var beschreibung_haendler = beschreibungstext.split("<p>")[0];
 									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
@@ -148,17 +193,12 @@ $(function() {
 								});
 							});
 
-						if(tabs[i].info_agb_link_ausblenden)
-							$('#preistab_inhalt' + i + ' div.gh_hl1').remove();
-
 						if(tabs[i].preisfeld_ausmisten) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(1)').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
+								tooltip_anhaengen(value, 's', function(value) {
 
 									if(value.attr('colspan') == 5)
 										return;
-
-									value.attr('title', value.text());
 
 									var preis = value.find('span.price').clone();
 									if(!tabs[i].kreditkartenlogos_ausblenden)
@@ -181,7 +221,7 @@ $(function() {
 						if(tabs[i].bewertungsinfo_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(3)').each(function(index, value) {
 
-								tooltip_anhaengen(value, function(value) {
+								tooltip_anhaengen(value, 'e', function(value) {
 
 									if(value.attr('colspan') == 5)
 										return;
@@ -200,65 +240,66 @@ $(function() {
 							});
 						}
 
-						if(tabs[i].lagerstand_kuerzen) {
-							$('#preistab_inhalt' + i + ' #content_table div.av_l').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
-									return 'lagernd';
-								});
-							});
-							$('#preistab_inhalt' + i + ' #content_table div.av_k').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
-									return 'bis 4 Werktage';
-								});
-							});
-							$('#preistab_inhalt' + i + ' #content_table div.av_e').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
-									return '4+ Werktage';
-								});
-							});
-						}
-
 						if(tabs[i].haendlerlink_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
-								tooltip_anhaengen(value, function(value) {
 
-//									value.find('a img').removeClass();
-//
-//									var div = $(document.createElement('div'));
-//									div.attr('id', 'haendler_ausblenden');
-//
-									if(value.attr('colspan') == 5)
-										return;
+								var alte_flag = $(value).find('img.hlflg');
 
-									if(value.find('img:first.hlflg').length)
-										var haendlerlink = value.find('img:first.hlflg').clone()[0].outerHTML;
-									else
-										var haendlerlink = '';
-//									if(value.find('img:first.hlflg').length)
-//										haendlerlink = value.find('img:first.hlflg').clone()[0].outerHTML;
+								if(alte_flag.length) {
+									var div_haendler_ausblenden = $(document.createElement('div'));
+									div_haendler_ausblenden.html('Händler aus Region ausblenden');
 
-									haendlerlink = haendlerlink.concat(value.find('a').clone()[0].outerHTML);
-									if(tabs[i].bezugsart == 'abholung') {
-										haendlerlink = haendlerlink.concat('<br>' + value.find('b span').text().replace(/\s/g, '') + ' ');
-										value.find('a:last').html('Karte');
-										haendlerlink = haendlerlink.concat(value.find('a:last')[0].outerHTML);
+									var img_region = $(document.createElement('img'));
+									img_region.attr('src', $(value).find('img.hlflg').attr('src'));
+
+									var div_flag = $(document.createElement('div'));
+									div_flag.addClass('powerTip flag_links');
+									div_flag.data('powertipjq', div_haendler_ausblenden);
+									div_flag.append(img_region);
+
+									alte_flag.remove();
+								}
+
+								tooltip_anhaengen(value, 's', function(value) {
+
+									var haendlerlink_neu = $(document.createElement('div'));
+									haendlerlink_neu.addClass('haendlerlink');
+
+									if(!tabs[i].info_agb_link_ausblenden)
+										haendlerlink_neu.prepend(value.find('.gh_hl1'));
+
+									var link = value.find('a:first').clone().empty();
+									var haendlerlogo = value.find('a:first img');
+
+									if(haendlerlogo.length) {
+										var img_haendlerlogo = $(document.createElement('img'));
+										img_haendlerlogo.attr('src', haendlerlogo.attr('src'));
+
+										var haendlername = value.find('a small');
+										link.append(img_haendlerlogo, '<br>', haendlername);
+									} else {
+										link.html(value.find('a:first'));
+										link.prepend('<br>');
 									}
-//									return div[0].outerHTML + haendlerlink;
-									return haendlerlink;
+									haendlerlink_neu.prepend(link);
+
+									return haendlerlink_neu;
 								});
+								$(value).prepend(div_flag);
 							});
-							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2) img+br').remove();
 						}
 
 						if(tabs[i].spaltenueberschriften_ausblenden)
 							$('#preistab_inhalt' + i + ' #content_table tr:lt(2)').hide();
 
-						$('#preistab_inhalt' + i).tooltip({
-								track: true,
-								items: '.tooltip',
-								content: function() {
-									return $(this).find('div.original_content').html();
-								}
+						$('.powerTip_e').powerTip({
+							placement: 'e',
+							mouseOnToPopup: true
+						});
+
+						$('.powerTip_s').powerTip({
+							placement: 's',
+							mouseOnToPopup: true
 						});
 					}
 				});

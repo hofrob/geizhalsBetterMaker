@@ -16,6 +16,7 @@
 			"jquery-ui-1.10.3.custom.min.css",
 			"jquery.fancybox.css",
 			"jquery.fancybox-thumbs.css",
+			"jquery.powertip-blue.min.css",
 			"bettermaker.css"
 		],
 		"js": [
@@ -24,6 +25,7 @@
 			"jquery.fancybox.pack.js",
 			"jquery.mousewheel-3.0.6.pack.js",
 			"jquery.fancybox-thumbs.js",
+			"jquery.powertip.min.js",
 			"main.js",
 			"kategorien.js",
 			"artikel.js",

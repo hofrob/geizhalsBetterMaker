@@ -45,38 +45,43 @@ $(function() {
 			} else {
 				for (var i in preisagenten) {
 					(function(i) {
-						var p = $(document.createElement('p'));
+						var p;
 						var a = $(document.createElement('a'));
 						var img = $(document.createElement('img'));
 						var region = i.substring(0,2);
 						var artikel = i.replace(/^.*_(\d+)_.*$/, '$1');
 						var tab_id = i.replace(/^.*_(\d+)$/, '$1');
+						var alter = '';
+						var preis;
+
+						if(typeof preisagenten[i].preis == 'number')
+							preis = preisagenten[i].preis/100;
+						else
+							preis = '--';
+
+						if(preisagenten[i].uhrzeit)
+							alter = 'vor ' + errechne_alter(new Date(preisagenten[i].uhrzeit));
 
 						img.attr('src', '../b/' + region + '.png');
 						img.css('vertical-align', 'middle');
 						a.html(preisagenten[i].titel);
 						a.attr({
-							'href': '#',
-							'onClick': 'return false;'
+							'href': window.location.origin + '/' + region + '/' + artikel,
+							'data-artikel': region + '_' + artikel
 						});
 
-						a.click(function(event) {
+						var selber_artikel = $('[data-artikel=' + region + '_' + artikel + ']', div);
+						if(selber_artikel.length) {
+							p = selber_artikel.closest('p');
+						} else {
+							p = $(document.createElement('p'));
+							p.append(img, ' ', a);
+						}
 
-							var neues_chrome_tab = false;
-							if(event.button || event.ctrlKey)
-								neues_chrome_tab = true;
-
-							chrome.runtime.sendMessage({
-								'typ': 'url_tab_aktivieren',
-								'neues_chrome_tab': neues_chrome_tab,
-								'link': window.location.origin + '/' + region + '/' + artikel,
-								'tab_id': tab_id
-							});
-						});
-
-						p.append(img, ' ', a, '<br>letzter Bestpreis <strong>€ ' + preisagenten[i].preis/100 +
-							'</strong> (' + preisagenten[i].haendler + ') in Tab <strong>' + tabs[tab_id].tabname + '</strong>');
+						p.append('<br>' + alter + ' <strong>€ ' + preis +
+								'</strong> (' + preisagenten[i].haendler + ') in <strong>' + tabs[tab_id].tabname + '</strong>');
 						div.append(p);
+
 					})(i);
 				}
 			}

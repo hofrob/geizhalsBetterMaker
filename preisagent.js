@@ -63,33 +63,62 @@ function check_preisagenten() {
 							return data.replace(/<img\b[^>]*>/ig, '');
 						},
 						success: function(data) {
-							var preis = parseInt($('#content_table span.price:first', data).text().replace(/,/, '').replace(/\-\-/, '00'), 10);
+
+							var preis_span = $('#content_table span.price:first', data);
+							var preis, haendler;
+
+							if(preis_span.length) {
+								preis = parseInt($('#content_table span.price:first', data).text().replace(/,/, '').replace(/\-\-/, '00'), 10);
+								haendler = $('#content_table tr.t1:first td:nth-child(2) a:first', data).text();
+							} else {
+								preis = '--';
+								haendler = '--';
+							}
+
 							if(preis != preisagenten[i].preis) {
 
-								var haendler = $('#content_table tr.t1:first td:nth-child(2) a:first', data).text();
 								chrome.storage.sync.get('preisagenten', function(syncStorage) {
 									var preisagenten = syncStorage['preisagenten'];
 									preisagenten[i].preis = preis;
 									preisagenten[i].haendler = haendler;
+									preisagenten[i].uhrzeit = Date.now();
 									chrome.storage.sync.set({'preisagenten': preisagenten});
 								});
 
-								var differenz = Math.abs((preisagenten[i].preis - preis))/100;
+								var text;
+								if(typeof preis != 'number') {
+									text = 'Kein Preis mehr gefunden im Tab "' + tabs[tab_id].tabname + '".\n\
+										Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ')';
+								} else if(typeof preisagenten[i].preis != 'number') {
+									text = 'Preis gefunden im Tab "' + tabs[tab_id].tabname + '": € ' + preis/100 + ' (' + haendler + ')';
+								} else {
+									var differenz = Math.abs((preisagenten[i].preis - preis))/100;
+									var aenderung;
 
-								if(preis < preisagenten[i].preis)
-									aenderung = ' gesunken';
-								else
-									aenderung = ' gestiegen';
+									if(preis < preisagenten[i].preis)
+										aenderung = ' gesunken';
+									else
+										aenderung = ' gestiegen';
+
+									text = 'Preis ist im Tab "' + tabs[tab_id].tabname + '" um € ' + differenz + aenderung + '. \n\
+										Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ') \n\
+										Nachher: € ' + preis/100 + ' (' + haendler + ')';
+								}
+
 
 								notify({
 									'typ': 'notification',
 									'icon': 'preisagent_32.png',
 									'titel': 'Preisagent für "' + preisagenten[i].titel + '"',
-									'text': 'Preis ist im Tab "' + tabs[tab_id].tabname + '" um € ' + differenz + aenderung + '. \n\
-										Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ') \n\
-										Nachher: € ' + preis/100 + ' (' + haendler + ')',
+									'text': text,
 									'link': url,
 									'tab_id': tab_id
+								});
+							} else {
+								chrome.storage.sync.get('preisagenten', function(syncStorage) {
+									var preisagenten = syncStorage['preisagenten'];
+									preisagenten[i].uhrzeit = Date.now();
+									chrome.storage.sync.set({'preisagenten': preisagenten});
 								});
 							}
 						}
