@@ -162,7 +162,7 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 });
 
 chrome.alarms.create('preisagent_check', {
-	'delayInMinutes': 0,
+	'delayInMinutes': 2,
 	'periodInMinutes': 20
 });
 

@@ -21,7 +21,7 @@ $(function() {
 			divh.append(' Preisagenten');
 			div.append(divh);
 
-			if ($.isEmptyObject(preisagenten)) {
+			if($.isEmptyObject(preisagenten)) {
 				var p = $(document.createElement('p'));
 				var a = $(document.createElement('a'));
 				var img = $(document.createElement('img'));
@@ -43,7 +43,7 @@ $(function() {
 				div.append(p);
 
 			} else {
-				for (var i in preisagenten) {
+				for(var i in preisagenten) {
 					(function(i) {
 						var p;
 						var a = $(document.createElement('a'));
