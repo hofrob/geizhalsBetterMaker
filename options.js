@@ -9,7 +9,6 @@ function restore_options() {
 		console.log(syncStorage);
 		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
-		var preisagenten = syncStorage['preisagenten'];
 		var standard_tab = syncStorage['standard_tab'];
 
 		if(tabs && tabs.length >= 6)
