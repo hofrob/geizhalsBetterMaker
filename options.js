@@ -1,15 +1,17 @@
 function restore_options() {
 	$('#error').html('');
 	$('#usertabs').empty();
+	$('#haendler').empty();
 	$('#preisagenten').empty();
 	$('#preisagent_entfernen').prop('disabled', true);
+	$('#haendler_entfernen').prop('disabled', true);
 	chrome.storage.sync.get(null, function(syncStorage) {
-		if(!syncStorage['dev'])
-			$('#preisagenten').closest('form').hide();
+
 		console.log(syncStorage);
 		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
 		var standard_tab = syncStorage['standard_tab'];
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
 
 		if(tabs && tabs.length >= 6)
 			$('#usertabs').closest('form').prop('disabled', true).css('color', '#707070');
@@ -29,6 +31,16 @@ function restore_options() {
 			$('#usertabs').append(text);
 		});
 
+		for(var i in haendler_ausblenden) {
+			var text;
+			if(typeof haendler_ausblenden[i] == 'number')
+				text = '<option value="' + i + '">' + i + ' (noch ' + errechne_alter(new Date(haendler_ausblenden[i] + 4*60*60*1000)) + ')</option>';
+			else
+				text = '<option value="' + i + '">' + i + ' (permanent)</option>';
+
+			$('#haendler').append(text);
+		}
+
 		cb = Object.keys(allgemein);
 		for(var i=0; i < cb.length; i++)
 			$('#' + cb[i]).prop('checked', allgemein[cb[i]]);
@@ -41,6 +53,7 @@ function restore_options() {
 
 function reset_form() {
 	$('#usertabs').mouseup();
+	$('#haendler').mouseup();
 	$('#tab_settings').hide();
 	$('[name=bezugsart]').prop('checked', false);
 	$('#bezugsart_keine').prop('checked', true);
@@ -194,6 +207,26 @@ $(function() {
 		});
 	});
 
+	$('#haendler_entfernen').click(function() {
+		var haendler_entfernen = $('#haendler').val();
+		if(!haendler_entfernen) {
+			$('#error').html('Bitte mindestens einen Händler aus der Liste wählen.');
+			return;
+		}
+
+		chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+			var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+
+			for(var i = 0; i < haendler_entfernen.length; i++)
+				delete haendler_ausblenden[haendler_entfernen[i]];
+
+			chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden}, function() {
+				chrome.runtime.sendMessage({'typ': 'haendler_einblenden'});
+			});
+			restore_options();
+		});
+	});
+
 	$('#preisagent_entfernen').click(function() {
 		var preisagent_entfernen = $('#preisagenten').val();
 		if(!preisagent_entfernen) {
@@ -280,6 +313,14 @@ $(function() {
 			$('#tab_entfernen').prop('disabled', true);
 			$('#tab_bearbeiten').prop('disabled', true);
 			$('#als_standard').prop('disabled', true);
+		}
+	});
+
+	$('#haendler').mouseup(function() {
+		if($('#haendler').val()) {
+			$('#haendler_entfernen').prop('disabled', false);
+		} else {
+			$('#haendler_entfernen').prop('disabled', true);
 		}
 	});
 

@@ -114,12 +114,14 @@ $(function() {
 						$('#gh_afilterbox, #content_table, #gh_content_wrapper > h3, #gh_content_wrapper > div.blaettern', data).
 								appendTo('#preistab_inhalt' + i);
 
+						chrome.runtime.sendMessage({'typ': 'haendler_ausblenden'});
+
 						if(tabs[i].filterbox_ausblenden)
 							$('#preistab_inhalt' + i + ' #gh_afilterbox').hide();
 
 						if(tabs[i].vkinfo_ausblenden && tabs[i].lagerstand_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(4)').each(function(index, value) {
-								tooltip_anhaengen(value, 'e', function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 									value.find('div.vk_inl').remove();
 									var lagerstand = value.find('.av_inl');
 
@@ -135,23 +137,23 @@ $(function() {
 							});
 						} else if(tabs[i].vkinfo_ausblenden) {
 							$('#preistab_inhalt' + i + ' div.vk_inl').each(function(index, value) {
-								tooltip_anhaengen(value, 'e', function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 									return 'Versandkosten';
 								});
 							});
 						} else if(tabs[i].lagerstand_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table div.av_l').each(function(index, value) {
-								tooltip_anhaengen(value, 'e', function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 									return 'lagernd';
 								});
 							});
 							$('#preistab_inhalt' + i + ' #content_table div.av_k').each(function(index, value) {
-								tooltip_anhaengen(value, 'e', function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 									return 'bis 4 Werktage';
 								});
 							});
 							$('#preistab_inhalt' + i + ' #content_table div.av_e').each(function(index, value) {
-								tooltip_anhaengen(value, 'e', function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 									return '4+ Werktage';
 								});
 							});
@@ -162,15 +164,22 @@ $(function() {
 							var preis_von = [];
 							setInterval(function() {
 								$('#preistab_inhalt' + i + ' #content_table tr').find('td:first small:first').each(function(index, value) {
-									var alter = errechne_alter($(value).attr('title'));
-									$(value).html(alter);
+									var alter;
+									if($('span', value).length) {
+										alter = errechne_alter($('span', value).attr('title'));
+										$('span', value).html(alter);
+									} else if($(value).attr('title')) {
+										alter = errechne_alter($(value).attr('title'));
+										$(value).html(alter);
+									}
 								});
+								haendler_einblenden();
 							}, 60*1000);
 						}
 
 						if(tabs[i].beschreibungstext_kuerzen)
 							$('#preistab_inhalt' + i + ' .ty2').each(function(index, value) {
-								tooltip_anhaengen(value, 's', function(value) {
+								tooltip_anhaengen(value, {richtung:'s'}, function(value) {
 									beschreibungstext = value.html();
 									var beschreibung_haendler = beschreibungstext.split("<p>")[0];
 									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
@@ -195,7 +204,7 @@ $(function() {
 
 						if(tabs[i].preisfeld_ausmisten) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(1)').each(function(index, value) {
-								tooltip_anhaengen(value, 's', function(value) {
+								tooltip_anhaengen(value, {richtung:'w'}, function(value) {
 
 									if(value.attr('colspan') == 5)
 										return;
@@ -221,7 +230,7 @@ $(function() {
 						if(tabs[i].bewertungsinfo_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(3)').each(function(index, value) {
 
-								tooltip_anhaengen(value, 'e', function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 
 									if(value.attr('colspan') == 5)
 										return;
@@ -243,6 +252,56 @@ $(function() {
 						if(tabs[i].haendlerlink_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
 
+								var processTooltip = function(div) {
+
+									if($('.haendler_ausblenden', div).length)
+										return div;
+
+									var a = $(document.createElement('a'));
+
+									a.attr({
+										'href': '#',
+										'onClick': 'return false;'
+									}).click(function() {
+										$('#powerTip .haendler_ausblenden').show();
+									}).html('Ausblenden');
+
+									$('.gh_hl1', div).append(' ', a);
+
+									var div_haendler_ausblenden = $(document.createElement('div'));
+									var img_temp = $(document.createElement('img'));
+
+									img_temp.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/entfernen.png')
+										.addClass('haendler_ausblenden_icon')
+										.attr('title', 'temp');
+
+									var img_perm = img_temp.clone().attr('title', 'perm');
+
+									div_haendler_ausblenden.addClass('haendler_ausblenden')
+											.append('<br>Händler ausblenden:<br>',
+													img_temp, ' temporär (4h)<br>',
+													img_perm, ' permanent');
+
+									$('.haendler_ausblenden_icon', div_haendler_ausblenden).click(function(e) {
+										var haendlername = $('#powerTip a:first').text();
+
+										chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+											var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+											if($(e.target).attr('title') == 'temp')
+												haendler_ausblenden[haendlername] = Date.now();
+											else
+												haendler_ausblenden[haendlername] = true;
+
+											chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden}, function() {
+												chrome.runtime.sendMessage({'typ': 'haendler_ausblenden'});
+											});
+										});
+									});
+
+									div.append(div_haendler_ausblenden);
+									return div;
+								};
+
 								var alte_flag = $(value).find('img.hlflg');
 
 								if(alte_flag.length) {
@@ -260,7 +319,7 @@ $(function() {
 									alte_flag.remove();
 								}
 
-								tooltip_anhaengen(value, 's', function(value) {
+								tooltip_anhaengen(value, {richtung:'s', processTooltip: processTooltip}, function(value) {
 
 									var haendlerlink_neu = $(document.createElement('div'));
 									haendlerlink_neu.addClass('haendlerlink');
@@ -299,6 +358,11 @@ $(function() {
 
 						$('.powerTip_s').powerTip({
 							placement: 's',
+							mouseOnToPopup: true
+						});
+
+						$('.powerTip_w').powerTip({
+							placement: 'w',
 							mouseOnToPopup: true
 						});
 					}

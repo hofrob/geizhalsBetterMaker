@@ -22,7 +22,7 @@ function get_region() {
 	return 'eu';
 }
 
-function tooltip_anhaengen(value, richtung, aufraeumen) {
+function tooltip_anhaengen(value, settings, aufraeumen) {
 	value = $(value);
 
 	var div = $(document.createElement('div'));
@@ -40,8 +40,13 @@ function tooltip_anhaengen(value, richtung, aufraeumen) {
 		'max-width': width + 'px',
 		'overflow': 'hidden'
 	});
-	value.data('powertipjq', div);
-	value.addClass('powerTip_' + richtung);
+	value.data('powertipjq', function() {
+		if(typeof settings.processTooltip == 'function')
+			return settings.processTooltip(div);
+		else
+			return div;
+	});
+	value.addClass('powerTip_' + settings.richtung);
 }
 
 function getvars_fuer_tab(tab) {
@@ -80,7 +85,7 @@ function errechne_alter(datum_string) {
 	}
 
 	var datum_bis = new Date();
-	var alter = Math.floor((datum_bis.getTime() - datum_von.getTime())/(1000*60));
+	var alter = Math.floor(Math.abs(datum_bis.getTime() - datum_von.getTime())/(1000*60));
 
 	if(alter <= 0)
 		return '< 1min';
@@ -88,4 +93,83 @@ function errechne_alter(datum_string) {
 		return alter + 'min';
 	else
 		return Math.floor(alter/60) + 'h' + alter % 60;
+}
+
+function haendler_ausblenden() {
+
+	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+
+		for(var haendlername in haendler_ausblenden) {
+			(function(haendlername) {
+
+				$('#preistabs tr.t1, #preistabs tr.t2').each(function(index, value) {
+					if($('td:nth-child(2) a:first', value).text() == haendlername && !$(value).hasClass('haendler_ausblenden')) {
+						$(value).addClass('haendler_ausblenden');
+
+						var a = $(document.createElement('a'));
+
+						a.attr({
+							'href': '#',
+							'onClick': 'return false;',
+							'title': haendlername
+						}).click(function(e) {
+							chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+
+								var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+								delete haendler_ausblenden[$(e.target).attr('title')];
+
+								chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden}, function() {
+									chrome.runtime.sendMessage({'typ': 'haendler_einblenden'});
+								});
+							});
+						}).html('einblenden');
+
+						var small = $(document.createElement('small'));
+
+						var ausblendart;
+						if(typeof haendler_ausblenden[haendlername] == 'number') {
+
+							var bis = new Date(haendler_ausblenden[haendlername] + 4*60*60*1000);
+							var bis_string = ('0'+bis.getDate()).slice(-2) + '.' +
+									('0'+(parseInt(bis.getMonth(), 10)+1)).slice(-2) + '.' +
+									bis.getFullYear() + ' ' +
+									('0'+bis.getHours()).slice(-2) + ':' +
+									('0'+bis.getMinutes()).slice(-2) + ':' +
+									('0'+bis.getSeconds()).slice(-2);
+
+							ausblendart = '(noch <span title="' + bis_string + '">' + errechne_alter(new Date(bis)) + '</span>)';
+						} else {
+							ausblendart = '(permanent)';
+						}
+
+								small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
+						var td = $(document.createElement('td'))
+								.attr('colspan', '5')
+								.append(small);
+						var tr = $(document.createElement('tr')).html(td).css('border', '1px solid black');
+
+						$(value).after(tr);
+					}
+				});
+			})(haendlername);
+		}
+	});
+}
+
+function haendler_einblenden() {
+	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+
+		for(var i = 0; i < 6; i++) {
+			$('#preistab_inhalt' + i + ' tr.t1, #preistab_inhalt' + i + ' tr.t2').each(function(index, value) {
+				if(typeof haendler_ausblenden[$('td:nth-child(2) a:first', value).text()] == 'undefined'
+						&& $(value).hasClass('haendler_ausblenden')) {
+
+					$(value).removeClass('haendler_ausblenden').next().remove();
+				}
+
+			});
+		}
+	});
 }

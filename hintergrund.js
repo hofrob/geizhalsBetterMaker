@@ -21,6 +21,7 @@ function init_settings() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var preisagenten = syncStorage['preisagenten'];
 		var favoriten = syncStorage['favoriten'];
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
 
 		if(typeof preisagenten != 'object') {
 			preisagenten = {};
@@ -30,6 +31,11 @@ function init_settings() {
 		if(typeof favoriten != 'object') {
 			favoriten = {};
 			chrome.storage.sync.set({'favoriten': favoriten});
+		}
+
+		if(typeof haendler_ausblenden != 'object') {
+			haendler_ausblenden = {};
+			chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden});
 		}
 	});
 }
@@ -125,9 +131,30 @@ function check_preisagenten() {
 	});
 }
 
+function haendler_einblenden_check() {
+	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+		var aenderung = false;
+
+		for(var haendlername in haendler_ausblenden) {
+			if(typeof haendler_ausblenden[haendlername] == 'number' && Date.now()-4*60*60*1000 > haendler_ausblenden[haendlername]) {
+				delete haendler_ausblenden[haendlername];
+				aenderung = true;
+			}
+		}
+
+		if(aenderung) {
+			chrome.runtime.sendMessage({'typ': 'haendler_einblenden'});
+			chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden});
+		}
+	});
+}
+
 chrome.alarms.onAlarm.addListener(function(alarm) {
 	if(alarm.name == 'preisagent_check') {
 		check_preisagenten();
+	} else if(alarm.name == 'haendler_einblenden_check') {
+		haendler_einblenden_check();
 	}
 });
 
@@ -152,12 +179,60 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 					code: 'function tab_aktivieren() { return ' + request.tab_id + ' }'
 				});
 			});
+	} else if(request.typ == 'haendler_ausblenden') {
+		chrome.tabs.query({url: '*://*.geizhals.at/*'}, function(tabs) {
+			for(var i = 0; i < tabs.length; i++) {
+				chrome.tabs.executeScript(tabs[i].id, {
+					code: 'haendler_ausblenden("' + request.haendlername + '");'
+				});
+			}
+		});
+		chrome.tabs.query({url: '*://*.geizhals.eu/*'}, function(tabs) {
+			for(var i = 0; i < tabs.length; i++) {
+				chrome.tabs.executeScript(tabs[i].id, {
+					code: 'haendler_ausblenden("' + request.haendlername + '");'
+				});
+			}
+		});
+		chrome.tabs.query({url: '*://*.geizhals.de/*'}, function(tabs) {
+			for(var i = 0; i < tabs.length; i++) {
+				chrome.tabs.executeScript(tabs[i].id, {
+					code: 'haendler_ausblenden("' + request.haendlername + '");'
+				});
+			}
+		});
+	} else if(request.typ == 'haendler_einblenden') {
+		chrome.tabs.query({url: '*://*.geizhals.at/*'}, function(tabs) {
+			for(var i = 0; i < tabs.length; i++) {
+				chrome.tabs.executeScript(tabs[i].id, {
+					code: 'haendler_einblenden();'
+				});
+			}
+		});
+		chrome.tabs.query({url: '*://*.geizhals.eu/*'}, function(tabs) {
+			for(var i = 0; i < tabs.length; i++) {
+				chrome.tabs.executeScript(tabs[i].id, {
+					code: 'haendler_einblenden();'
+				});
+			}
+		});
+		chrome.tabs.query({url: '*://*.geizhals.de/*'}, function(tabs) {
+			for(var i = 0; i < tabs.length; i++) {
+				chrome.tabs.executeScript(tabs[i].id, {
+					code: 'haendler_einblenden();'
+				});
+			}
+		});
 	}
 });
 
 chrome.alarms.create('preisagent_check', {
 	'delayInMinutes': 2,
-	'periodInMinutes': 20
+	'periodInMinutes': 10
+});
+
+chrome.alarms.create('haendler_einblenden_check', {
+	'periodInMinutes': 5
 });
 
 chrome.runtime.onInstalled.addListener(function() {
