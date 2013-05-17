@@ -144,13 +144,13 @@ $(function() {
 
 				var div_bepixelung = $(document.createElement('div'));
 				div_bepixelung.html('Hast du ein Bild? ');
-				div_bepixelung.append($('#gh_proddesc_right div.nopic a').first());
+				div_bepixelung.append($('#gh_proddesc_right div.nopic a:contains(bepixelung)'));
 
 				var div_googleimage = $(document.createElement('div'));
 				div_googleimage.html('Oder suche nach einem Bild auf ');
 				var a = $(document.createElement('a'));
 				a.attr({
-					href: 'https://www.google.com/search?tbm=isch&tbs=itp:photo&q=' + encodeURIComponent($('h1 span').html()),
+					href: 'https://www.google.com/search?tbm=isch&tbs=itp:photo&q=' + encodeURIComponent($('h1 span:first').text()),
 					target: '_blank'
 				});
 				a.html('Google!');
