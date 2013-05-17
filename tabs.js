@@ -66,12 +66,12 @@ $(function() {
 
 							if($('#preisagent.aktiv').length) {
 
-								var preis_span = $('#preistab_inhalt' + tab_id + ' span.price:first');
+								var preis_span = $('#preistab_inhalt' + tab_id + ' tr:not(.haendler_ausblenden) span.price:first');
 								var preis, haendler;
 
 								if(preis_span.length) {
-									preis = parseInt($('#preistab_inhalt' + tab_id + ' span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10);
-									haendler = $('#preistab_inhalt' + tab_id + ' #content_table tr.t1:first td:nth-child(2) a:first').text();
+									preis = parseInt($('#preistab_inhalt' + tab_id + ' tr:not(.haendler_ausblenden) span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10);
+									haendler = $('#preistab_inhalt' + tab_id + ' #content_table tr:not(.haendler_ausblenden) td:nth-child(2) a:first').text();
 								} else {
 									preis = '--';
 									haendler = '--';

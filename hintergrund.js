@@ -49,6 +49,7 @@ function check_preisagenten() {
 
 		var preisagenten = syncStorage['preisagenten'];
 		var tabs = syncStorage['tabs'];
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
 
 		if(!$.isEmptyObject(preisagenten)) {
 			for(var i in preisagenten) {
@@ -72,12 +73,22 @@ function check_preisagenten() {
 							},
 							success: function(data) {
 
-								var preis_span = $('#content_table span.price:first', data);
+								var zeilen = $('#content_table tr.t1, #content_table tr.t2', data);
+								var bestpreis;
+
+								for(var j = 0; j < zeilen.length; j++) {
+									if(haendler_ausblenden[$('td:nth-child(2) a:first', zeilen[j]).text()])
+										continue;
+									bestpreis = zeilen[j];
+									break;
+								}
+
+								var preis_span = $('span.price', bestpreis);
 								var preis, haendler;
 
 								if(preis_span.length) {
-									preis = parseInt($('#content_table span.price:first', data).text().replace(/,/, '').replace(/\-\-/, '00'), 10);
-									haendler = $('#content_table tr.t1:first td:nth-child(2) a:first', data).text();
+									preis = parseInt(preis_span.text().replace(/,/, '').replace(/\-\-/, '00'), 10);
+									haendler = $('td:nth-child(2) a:first', bestpreis).text();
 								} else {
 									preis = '--';
 									haendler = '--';
