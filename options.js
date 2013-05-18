@@ -114,7 +114,7 @@ $(function() {
 		for(var i=0; i < cb.length; i++) {
 			allgemein[$(cb[i]).context.id] = $(cb[i]).prop('checked');
 		}
-		chrome.storage.sync.set({'allgemein': allgemein});
+		chrome.storage.sync.set({allgemein: allgemein});
 	});
 
 	$('#tab_neu').click(function() {
@@ -180,7 +180,7 @@ $(function() {
 			} else {
 				tabs[tab_bearbeiten] = newtab;
 			}
-			chrome.storage.sync.set({'tabs': tabs});
+			chrome.storage.sync.set({tabs: tabs});
 			restore_options();
 		});
 	});
@@ -202,7 +202,7 @@ $(function() {
 					chrome.storage.sync.remove('standard_tab');
 			}
 
-			chrome.storage.sync.set({'tabs': tabs});
+			chrome.storage.sync.set({tabs: tabs});
 			restore_options();
 		});
 	});
@@ -220,8 +220,8 @@ $(function() {
 			for(var i = 0; i < haendler_entfernen.length; i++)
 				delete haendler_ausblenden[haendler_entfernen[i]];
 
-			chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden}, function() {
-				chrome.runtime.sendMessage({'typ': 'haendler_einblenden'});
+			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden}, function() {
+				chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
 			});
 			restore_options();
 		});
@@ -239,7 +239,7 @@ $(function() {
 			for(var i = 0; i < preisagent_entfernen.length; i++)
 				delete preisagenten[preisagent_entfernen[i]];
 
-			chrome.storage.sync.set({'preisagenten': preisagenten});
+			chrome.storage.sync.set({preisagenten: preisagenten});
 			restore_options();
 		});
 	});
@@ -254,7 +254,7 @@ $(function() {
 
 		standard_tab = parseInt(tab_als_standard[0], 10);
 
-		chrome.storage.sync.set({'standard_tab': standard_tab});
+		chrome.storage.sync.set({standard_tab: standard_tab});
 		restore_options();
 	});
 

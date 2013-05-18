@@ -25,8 +25,8 @@ function get_region() {
 function tooltip_anhaengen(value, settings, aufraeumen) {
 	value = $(value);
 
-	var div = $(document.createElement('div'));
-	div.html('<b>Originaltext</b>:<br><br>' + value.html());
+	var div = $(document.createElement('div'))
+			.html('<b>Originaltext</b>:<br><br>' + value.html());
 
 	value.html(aufraeumen(value));
 
@@ -38,7 +38,7 @@ function tooltip_anhaengen(value, settings, aufraeumen) {
 
 	div.css({
 		'max-width': width + 'px',
-		'overflow': 'hidden'
+		overflow: 'hidden'
 	});
 	value.data('powertipjq', function() {
 		if(typeof settings.processTooltip == 'function')
@@ -107,23 +107,24 @@ function haendler_ausblenden() {
 					if($('td:nth-child(2) a:first', value).text() == haendlername && !$(value).hasClass('haendler_ausblenden')) {
 						$(value).addClass('haendler_ausblenden');
 
-						var a = $(document.createElement('a'));
+						var a = $(document.createElement('a'))
+								.html('einblenden')
+								.attr({
+									href: '#',
+									onClick: 'return false;',
+									title: haendlername
+								})
+								.click(function(e) {
+									chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
 
-						a.attr({
-							'href': '#',
-							'onClick': 'return false;',
-							'title': haendlername
-						}).click(function(e) {
-							chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+										var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+										delete haendler_ausblenden[$(e.target).attr('title')];
 
-								var haendler_ausblenden = syncStorage['haendler_ausblenden'];
-								delete haendler_ausblenden[$(e.target).attr('title')];
-
-								chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden}, function() {
-									chrome.runtime.sendMessage({'typ': 'haendler_einblenden'});
+										chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden}, function() {
+											chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
+										});
+									});
 								});
-							});
-						}).html('einblenden');
 
 						var small = $(document.createElement('small'));
 
@@ -146,8 +147,10 @@ function haendler_ausblenden() {
 								small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
 						var td = $(document.createElement('td'))
 								.attr('colspan', '5')
-								.append(small);
-						var tr = $(document.createElement('tr')).html(td).css('border', '1px solid black');
+								.append(small),
+							tr = $(document.createElement('tr'))
+								.html(td)
+								.css('border', '1px solid black');
 
 						$(value).after(tr);
 					}

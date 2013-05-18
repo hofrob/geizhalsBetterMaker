@@ -3,23 +3,23 @@
 	height: 30px;
 	float: left;
 	position: relative;
-	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_leer.png);
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_leer.png);
 	background-repeat: no-repeat;
 	cursor: pointer;
 }
 
 #favorit.aktiv {
-	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_hell.png);
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_hell.png);
 }
 
 #favorit.aktiv:hover {
-	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_hover.png),
-		url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_hell.png);
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_hover.png),
+		url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_hell.png);
 }
 
 #favorit:hover {
-	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_hover.png),
-		url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/stern_leer.png);
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_hover.png),
+		url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_leer.png);
 }
 
 #preisagent {
@@ -27,13 +27,13 @@
 	height: 16px;
 	float: right;
 	position: relative;
-	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_on.png);
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/preisagent_on.png);
 	background-repeat: no-repeat;
 	cursor: pointer;
 }
 
 #preisagent.aktiv {
-	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/preisagent_off.png);
+	background-image: url(chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/preisagent_off.png);
 }
 
 #preistabs tr.t1 td:nth-child(1) {

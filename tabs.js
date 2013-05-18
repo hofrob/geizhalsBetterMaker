@@ -5,23 +5,22 @@ $(function() {
 
 	if(window.location.search || window.location.hash) {
 
-		var a = $(document.createElement('a'));
-		a.addClass('ntd');
-		a.attr('href', window.location.pathname);
-		a.html('BetterMaker Tabs');
-
-		var span = $(document.createElement('span'));
-		span.addClass('monav');
-		span.append(a);
+		var a = $(document.createElement('a'))
+				.addClass('ntd')
+				.attr('href', window.location.pathname)
+				.html('BetterMaker Tabs'),
+			span = $(document.createElement('span'))
+				.addClass('monav')
+				.append(a);
 
 		$('#monav span:first').after(span);
 		return;
 	}
 
 	chrome.storage.sync.get(null, function(syncStorage) {
-		var tabs = syncStorage['tabs'];
-		var standard_tab = syncStorage['standard_tab'];
-		var artikel = window.location.pathname.replace(/^.*a(\d+)\.html.*$/i, '$1');
+		var tabs = syncStorage['tabs'],
+			standard_tab = syncStorage['standard_tab'],
+			artikel = window.location.pathname.replace(/^.*a(\d+)\.html.*$/i, '$1');
 
 		if(!tabs)
 			return;
@@ -46,11 +45,10 @@ $(function() {
 
 				chrome.storage.sync.get('preisagenten', function(syncStorage) {
 
-					var preisagenten = syncStorage['preisagenten'];
-					var div = $(document.createElement('div'));
-
-					div.attr('id', 'preisagent');
-					div.data({tab: i});
+					var preisagenten = syncStorage['preisagenten'],
+						div = $(document.createElement('div'))
+								.attr('id', 'preisagent')
+								.data({tab: i});
 
 					if(preisagenten[get_region() + '_' + artikel + '_' + i])
 						div.addClass('aktiv');
@@ -61,16 +59,18 @@ $(function() {
 						$('#preisagent').toggleClass('aktiv');
 						chrome.storage.sync.get('preisagenten', function(syncStorage) {
 
-							var preisagenten = syncStorage['preisagenten'];
-							var tab_id = $('#preisagent').data().tab;
+							var preisagenten = syncStorage['preisagenten'],
+								tab_id = $('#preisagent').data().tab;
 
 							if($('#preisagent.aktiv').length) {
 
-								var preis_span = $('#preistab_inhalt' + tab_id + ' tr:not(.haendler_ausblenden) span.price:first');
-								var preis, haendler;
+								var preis_span = $('#preistab_inhalt' + tab_id + ' tr:not(.haendler_ausblenden) span.price:first'),
+									preis,
+									haendler;
 
 								if(preis_span.length) {
-									preis = parseInt($('#preistab_inhalt' + tab_id + ' tr:not(.haendler_ausblenden) span.price:first').text().replace(/,/, '').replace(/\-\-/, '00'), 10);
+									preis = parseInt($('#preistab_inhalt' + tab_id + ' tr:not(.haendler_ausblenden) span.price:first')
+											.text().replace(/,/, '').replace(/\-\-/, '00'), 10);
 									haendler = $('#preistab_inhalt' + tab_id + ' #content_table tr:not(.haendler_ausblenden) td:nth-child(2) a:first').text();
 								} else {
 									preis = '--';
@@ -78,15 +78,15 @@ $(function() {
 								}
 
 								preisagenten[get_region() + '_' + artikel + '_' + tab_id] = {
-									'titel': $('h1 span:first').text(),
-									'preis': preis,
-									'haendler': haendler,
-									'uhrzeit': Date.now()
+									titel: $('h1 span:first').text(),
+									preis: preis,
+									haendler: haendler,
+									uhrzeit: Date.now()
 								};
-								chrome.storage.sync.set({'preisagenten': preisagenten});
+								chrome.storage.sync.set({preisagenten: preisagenten});
 							} else {
 								delete preisagenten[preisagent_index = get_region() + '_' + artikel + '_' + tab_id];
-								chrome.storage.sync.set({'preisagenten': preisagenten});
+								chrome.storage.sync.set({preisagenten: preisagenten});
 							}
 						});
 					});
@@ -100,9 +100,9 @@ $(function() {
 				$.ajax({
 					data: data,
 					dataType: 'html',
-					success: function(data, textStatus, jqXHR) {
+					success: function(data) {
 
-						important = $('#gh_important', data);
+						var important = $('#gh_important', data);
 						if(important.length) {
 							$('#preistab_inhalt' + i).append(important);
 							return;
@@ -111,10 +111,10 @@ $(function() {
 						/* [name="filterbox"] enthaelt script tag mit javascript call der uncaught reference error verursacht
 						 * $('[name="filterbox"]', data).find('script').remove() funktioniert nicht
 						 */
-						$('#gh_afilterbox, #content_table, #gh_content_wrapper > h3, #gh_content_wrapper > div.blaettern', data).
-								appendTo('#preistab_inhalt' + i);
+						$('#gh_afilterbox, #content_table, #gh_content_wrapper > h3, #gh_content_wrapper > div.blaettern', data)
+								.appendTo('#preistab_inhalt' + i);
 
-						chrome.runtime.sendMessage({'typ': 'haendler_ausblenden'});
+						chrome.runtime.sendMessage({typ: 'haendler_ausblenden'});
 
 						if(tabs[i].filterbox_ausblenden)
 							$('#preistab_inhalt' + i + ' #gh_afilterbox').hide();
@@ -137,23 +137,23 @@ $(function() {
 							});
 						} else if(tabs[i].vkinfo_ausblenden) {
 							$('#preistab_inhalt' + i + ' div.vk_inl').each(function(index, value) {
-								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function() {
 									return 'Versandkosten';
 								});
 							});
 						} else if(tabs[i].lagerstand_kuerzen) {
 							$('#preistab_inhalt' + i + ' #content_table div.av_l').each(function(index, value) {
-								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function() {
 									return 'lagernd';
 								});
 							});
 							$('#preistab_inhalt' + i + ' #content_table div.av_k').each(function(index, value) {
-								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function() {
 									return 'bis 4 Werktage';
 								});
 							});
 							$('#preistab_inhalt' + i + ' #content_table div.av_e').each(function(index, value) {
-								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
+								tooltip_anhaengen(value, {richtung:'e'}, function() {
 									return '4+ Werktage';
 								});
 							});
@@ -180,18 +180,17 @@ $(function() {
 						if(tabs[i].beschreibungstext_kuerzen)
 							$('#preistab_inhalt' + i + ' .ty2').each(function(index, value) {
 								tooltip_anhaengen(value, {richtung:'s'}, function(value) {
-									beschreibungstext = value.html();
-									var beschreibung_haendler = beschreibungstext.split("<p>")[0];
-									beschreibung_haendler = beschreibung_haendler.replace(/\<br\>|\<wbr\>/g, ' ');
-									beschreibung_haendler = beschreibung_haendler.substring(0,250);
+
+									var beschreibung_haendler = value.html().split("<p>")[0]
+											.replace(/\<br\>|\<wbr\>/g, ' ')
+											.substring(0,250);
 
 									if(tabs[i].preis_vom_zeitdifferenz) {
-										var datum = value.find('p b').text();
-										var alter = errechne_alter(datum);
-
-										var small = $(document.createElement('small'));
-										small.html(alter);
-										small.attr('title', datum);
+										var datum = value.find('p b').text(),
+											alter = errechne_alter(datum),
+											small = $(document.createElement('small'))
+												.html(alter)
+												.attr('title', datum);
 
 										preis_von.push(small[0].outerHTML);
 
@@ -202,16 +201,18 @@ $(function() {
 								});
 							});
 
-						if(tabs[i].preisfeld_ausmisten) {
+						if(tabs[i].preisfeld_ausmisten)
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(1)').each(function(index, value) {
 								tooltip_anhaengen(value, {richtung:'w'}, function(value) {
 
 									if(value.attr('colspan') == 5)
 										return;
 
-									var preis = value.find('span.price').clone();
+									var preis = value.find('span.price').clone(),
+										kkimg;
+
 									if(!tabs[i].kreditkartenlogos_ausblenden)
-										var kkimg = value.find('p').last().clone();
+										kkimg = value.find('p').last().clone();
 
 									value.empty();
 
@@ -225,9 +226,8 @@ $(function() {
 										return preis[0].outerHTML + '<br>' + stand + ' ' + kkimg[0].outerHTML;
 								});
 							});
-						}
 
-						if(tabs[i].bewertungsinfo_kuerzen) {
+						if(tabs[i].bewertungsinfo_kuerzen)
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(3)').each(function(index, value) {
 
 								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
@@ -239,17 +239,16 @@ $(function() {
 									if(/hat keine g.ltigen bewertungen/i.test(value.text())) {
 										a.html('keine Bewertungen');
 									} else {
-										var bewertungen = value.find('small a').text().replace(/.*?(\d+)\s*Bewertung(en)?/i, '$1');
-										var note = value.find('small:first').text().replace(/Note.*?([\d,]+).*/i, '$1');
+										var bewertungen = value.find('small a').text().replace(/.*?(\d+)\s*Bewertung(en)?/i, '$1'),
+											note = value.find('small:first').text().replace(/Note.*?([\d,]+).*/i, '$1');
 										note = parseFloat(note.replace(/,/, '.')).toFixed(2).replace(/\./, ',');
 										a.append('<br>' + note + '/' + bewertungen);
 									}
-									return a[0].outerHTML;
+									return a;
 								});
 							});
-						}
 
-						if(tabs[i].haendlerlink_kuerzen) {
+						if(tabs[i].haendlerlink_kuerzen)
 							$('#preistab_inhalt' + i + ' #content_table tr td:nth-child(2)').each(function(index, value) {
 
 								var processTooltip = function(div) {
@@ -257,27 +256,27 @@ $(function() {
 									if($('.haendler_ausblenden', div).length)
 										return div;
 
-									var a = $(document.createElement('a'));
-
-									a.attr({
-										'href': '#',
-										'onClick': 'return false;'
-									}).click(function() {
-										$('#powerTip .haendler_ausblenden').show();
-									}).html('Ausblenden');
+									var a = $(document.createElement('a'))
+											.html('Ausblenden')
+											.attr({
+												href: '#',
+												onClick: 'return false;'
+											})
+											.click(function() {
+												$('#powerTip .haendler_ausblenden').show();
+											});
 
 									$('.gh_hl1', div).append(' ', a);
 
-									var div_haendler_ausblenden = $(document.createElement('div'));
-									var img_temp = $(document.createElement('img'));
+									var div_haendler_ausblenden = $(document.createElement('div')),
+										img_temp = $(document.createElement('img'))
+											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/entfernen.png')
+											.addClass('haendler_ausblenden_icon')
+											.attr('title', 'temp'),
+										img_perm = img_temp.clone().attr('title', 'perm');
 
-									img_temp.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/images/entfernen.png')
-										.addClass('haendler_ausblenden_icon')
-										.attr('title', 'temp');
-
-									var img_perm = img_temp.clone().attr('title', 'perm');
-
-									div_haendler_ausblenden.addClass('haendler_ausblenden')
+									div_haendler_ausblenden
+											.addClass('haendler_ausblenden')
 											.append('<br>Händler ausblenden:<br>',
 													img_temp, ' temporär (4h)<br>',
 													img_perm, ' permanent');
@@ -292,8 +291,8 @@ $(function() {
 											else
 												haendler_ausblenden[haendlername] = true;
 
-											chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden}, function() {
-												chrome.runtime.sendMessage({'typ': 'haendler_ausblenden'});
+											chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden}, function() {
+												chrome.runtime.sendMessage({typ: 'haendler_ausblenden'});
 											});
 										});
 									});
@@ -305,40 +304,37 @@ $(function() {
 								var alte_flag = $(value).find('img.hlflg');
 
 								if(alte_flag.length) {
-									var div_haendler_ausblenden = $(document.createElement('div'));
-									div_haendler_ausblenden.html('Händler aus Region ausblenden');
-
-									var img_region = $(document.createElement('img'));
-									img_region.attr('src', $(value).find('img.hlflg').attr('src'));
-
-									var div_flag = $(document.createElement('div'));
-									div_flag.addClass('powerTip flag_links');
-									div_flag.data('powertipjq', div_haendler_ausblenden);
-									div_flag.append(img_region);
+									var div_haendler_ausblenden = $(document.createElement('div'))
+											.html('Händler aus Region ausblenden'),
+										img_region = $(document.createElement('img'))
+											.attr('src', $(value).find('img.hlflg').attr('src')),
+										div_flag = $(document.createElement('div'))
+											.addClass('powerTip flag_links')
+											.data('powertipjq', div_haendler_ausblenden)
+											.append(img_region);
 
 									alte_flag.remove();
 								}
 
 								tooltip_anhaengen(value, {richtung:'s', processTooltip: processTooltip}, function(value) {
 
-									var haendlerlink_neu = $(document.createElement('div'));
-									haendlerlink_neu.addClass('haendlerlink');
+									var haendlerlink_neu = $(document.createElement('div'))
+											.addClass('haendlerlink');
 
 									if(!tabs[i].info_agb_link_ausblenden)
 										haendlerlink_neu.prepend(value.find('.gh_hl1'));
 
-									var link = value.find('a:first').clone().empty();
-									var haendlerlogo = value.find('a:first img');
+									var link = value.find('a:first').clone().empty(),
+										haendlerlogo = value.find('a:first img');
 
 									if(haendlerlogo.length) {
-										var img_haendlerlogo = $(document.createElement('img'));
-										img_haendlerlogo.attr('src', haendlerlogo.attr('src'));
+										var img_haendlerlogo = $(document.createElement('img'))
+												.attr('src', haendlerlogo.attr('src'));
 
-										var haendlername = value.find('a small');
-										link.append(img_haendlerlogo, '<br>', haendlername);
+										link.append(img_haendlerlogo, '<br>', value.find('a small'));
 									} else {
-										link.html(value.find('a:first'));
-										link.prepend('<br>');
+										link.html(value.find('a:first'))
+												.prepend('<br>');
 									}
 									haendlerlink_neu.prepend(link);
 
@@ -346,7 +342,6 @@ $(function() {
 								});
 								$(value).prepend(div_flag);
 							});
-						}
 
 						if(tabs[i].spaltenueberschriften_ausblenden)
 							$('#preistab_inhalt' + i + ' #content_table tr:lt(2)').hide();

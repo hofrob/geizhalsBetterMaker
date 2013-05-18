@@ -1,12 +1,12 @@
 function notify(request) {
 	var notification = webkitNotifications.createNotification(
-		'images/' + request.icon,
+		'img/' + request.icon,
 		request.titel,
 		request.text
 	);
 	notification.onclick = function() {
 		chrome.tabs.create({
-			'url': request.link
+			url: request.link
 		}, function(tab) {
 			chrome.tabs.executeScript(tab.id, {
 				code: 'function tab_aktivieren() { return ' + request.tab_id + ' }'
@@ -19,49 +19,48 @@ function notify(request) {
 
 function init_settings() {
 	chrome.storage.sync.get(null, function(syncStorage) {
-		var preisagenten = syncStorage['preisagenten'];
-		var favoriten = syncStorage['favoriten'];
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+		var preisagenten = syncStorage['preisagenten'],
+			favoriten = syncStorage['favoriten'],
+			haendler_ausblenden = syncStorage['haendler_ausblenden'];
 
 		if(typeof preisagenten != 'object') {
 			preisagenten = {};
-			chrome.storage.sync.set({'preisagenten': preisagenten});
+			chrome.storage.sync.set({preisagenten: preisagenten});
 		}
 
 		if(typeof favoriten != 'object') {
 			favoriten = {};
-			chrome.storage.sync.set({'favoriten': favoriten});
+			chrome.storage.sync.set({favoriten: favoriten});
 		}
 
 		if(typeof haendler_ausblenden != 'object') {
 			haendler_ausblenden = {};
-			chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden});
+			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden});
 		}
 	});
 }
 
 function open_options() {
-	chrome.tabs.create({'url': chrome.extension.getURL('options.html')});
+	chrome.tabs.create({url: chrome.extension.getURL('options.html')});
 }
 
 function check_preisagenten() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 
-		var preisagenten = syncStorage['preisagenten'];
-		var tabs = syncStorage['tabs'];
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+		var preisagenten = syncStorage['preisagenten'],
+			tabs = syncStorage['tabs'],
+			haendler_ausblenden = syncStorage['haendler_ausblenden'];
 
 		if(!$.isEmptyObject(preisagenten)) {
 			for(var i in preisagenten) {
 				(function(i) {
 					setTimeout(function() {
 
-						var tab_id = i.replace(/^.*_(\d+)$/, '$1');
-						var data = getvars_fuer_tab(tabs[tab_id]);
-
-						var region = i.replace(/^(\w{2})_.*$/, '$1');
-						var artikel = i.replace(/^.*_(\d+)_.*$/, '$1');
-						var url = 'http://geizhals.' + region + '/' + artikel;
+						var tab_id = i.replace(/^.*_(\d+)$/, '$1'),
+							data = getvars_fuer_tab(tabs[tab_id]),
+							region = i.replace(/^(\w{2})_.*$/, '$1'),
+							artikel = i.replace(/^.*_(\d+)_.*$/, '$1'),
+							url = 'http://geizhals.' + region + '/' + artikel;
 
 						$.ajax({
 							url: url,
@@ -73,8 +72,8 @@ function check_preisagenten() {
 							},
 							success: function(data) {
 
-								var zeilen = $('#content_table tr.t1, #content_table tr.t2', data);
-								var bestpreis;
+								var zeilen = $('#content_table tr.t1, #content_table tr.t2', data),
+									bestpreis;
 
 								for(var j = 0; j < zeilen.length; j++) {
 									if(haendler_ausblenden[$('td:nth-child(2) a:first', zeilen[j]).text()])
@@ -83,8 +82,9 @@ function check_preisagenten() {
 									break;
 								}
 
-								var preis_span = $('span.price', bestpreis);
-								var preis, haendler;
+								var preis_span = $('span.price', bestpreis),
+									preis,
+									haendler;
 
 								if(preis_span.length) {
 									preis = parseInt(preis_span.text().replace(/,/, '').replace(/\-\-/, '00'), 10);
@@ -99,38 +99,39 @@ function check_preisagenten() {
 									preisagenten[i].preis = preis;
 									preisagenten[i].haendler = haendler;
 									preisagenten[i].uhrzeit = Date.now();
-									chrome.storage.sync.set({'preisagenten': preisagenten});
+									chrome.storage.sync.set({preisagenten: preisagenten});
 								});
 
 								if(preis != preisagenten[i].preis) {
 
 									var text;
+
 									if(typeof preis != 'number') {
 										text = 'Kein Preis mehr gefunden im Tab "' + tabs[tab_id].tabname + '".\n\
 											Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ')';
 									} else if(typeof preisagenten[i].preis != 'number') {
 										text = 'Preis gefunden im Tab "' + tabs[tab_id].tabname + '": € ' + preis/100 + ' (' + haendler + ')';
 									} else {
-										var differenz = Math.abs((preisagenten[i].preis - preis))/100;
-										var aenderung;
+										var differenz = Math.abs((preisagenten[i].preis - preis))/100,
+											aenderung;
 
 										if(preis < preisagenten[i].preis)
 											aenderung = ' gesunken';
 										else
 											aenderung = ' gestiegen';
 
-										text = 'Preis ist im Tab "' + tabs[tab_id].tabname + '" um € ' + differenz + aenderung + '. \n\
-											Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ') \n\
-											Nachher: € ' + preis/100 + ' (' + haendler + ')';
+										text = 'Preis ist im Tab "' + tabs[tab_id].tabname + '" um € ' + differenz + aenderung +
+												'. Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler +
+												') Nachher: € ' + preis/100 + ' (' + haendler + ')';
 									}
 
 									notify({
-										'typ': 'notification',
-										'icon': 'preisagent_32.png',
-										'titel': 'Preisagent für "' + preisagenten[i].titel + '"',
-										'text': text,
-										'link': url,
-										'tab_id': tab_id
+										typ: 'notification',
+										icon: 'preisagent_32.png',
+										titel: 'Preisagent für "' + preisagenten[i].titel + '"',
+										text: text,
+										link: url,
+										tab_id: tab_id
 									});
 								}
 							}
@@ -144,8 +145,8 @@ function check_preisagenten() {
 
 function haendler_einblenden_check() {
 	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
-		var aenderung = false;
+		var haendler_ausblenden = syncStorage['haendler_ausblenden'],
+			aenderung = false;
 
 		for(var haendlername in haendler_ausblenden) {
 			if(typeof haendler_ausblenden[haendlername] == 'number' && Date.now()-4*60*60*1000 > haendler_ausblenden[haendlername]) {
@@ -155,8 +156,8 @@ function haendler_einblenden_check() {
 		}
 
 		if(aenderung) {
-			chrome.runtime.sendMessage({'typ': 'haendler_einblenden'});
-			chrome.storage.sync.set({'haendler_ausblenden': haendler_ausblenden});
+			chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
+			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden});
 		}
 	});
 }
@@ -238,12 +239,12 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 });
 
 chrome.alarms.create('preisagent_check', {
-	'delayInMinutes': 2,
-	'periodInMinutes': 10
+	delayInMinutes: 2,
+	periodInMinutes: 10
 });
 
 chrome.alarms.create('haendler_einblenden_check', {
-	'periodInMinutes': 5
+	periodInMinutes: 5
 });
 
 chrome.runtime.onInstalled.addListener(function() {
