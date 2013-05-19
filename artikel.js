@@ -62,7 +62,7 @@ $(function() {
 				else if($('#img_wrapper #p_comment').length && /Research\s*In\s*Motion/i.test($('#img_wrapper #p_comment').text()))
 					bildunterschrift.push('<strong>&copy; Research In Motion</strong>');
 				else if($('#img_wrapper #p_comment').length)
-					bildunterschrift.push('<strong>' + $('#img_wrapper #p_comment').html() + '</strong>');
+					bildunterschrift.push('<strong>' + $('#img_wrapper #p_comment').html().replace(/\(c\)/, '&copy;') + '</strong>');
 
 				p.html(bildunterschrift.join(' - '));
 
@@ -202,17 +202,24 @@ $(function() {
 			tooltip_anhaengen('#gh_proddesc', {richtung: 's'}, function(value) {
 				value = value.first();
 				if(value.html()) {
-					value.html(value.text().replace(/•[^•]*?(k\.A\.|N\/A|keine\s*Angabe)[^•]*/g, ''));
-					return '<ul><li>' + value.html().replace(/•/g, '</li><li>') + '</li></ul>';
+					var beschreibung_alt = value.text().split('•');
+					var beschreibung_neu = [];
+					for(var i = 0; i < beschreibung_alt.length; i++) {
+						if(!/(k\.A\.|N\/A|keine\s*Angabe)\W*$/.test(beschreibung_alt[i]))
+							beschreibung_neu.push(beschreibung_alt[i]);
+					}
+
+					if(beschreibung_neu.length) {
+						return '<ul><li>' + beschreibung_neu.join('</li><li>') + '</li></ul>';
+					} else {
+						return 'keine Angaben';
+					}
 				}
 			});
 
-			$(document).tooltip({
-					track: true,
-					items: '.tooltip',
-					content: function() {
-						return $(this).find('div.original_content').html();
-					}
+			$('.powerTip_s').powerTip({
+				placement: 's',
+				mouseOnToPopup: true
 			});
 
 			if($('#gh_proddesc ul li').length > 5 && $(window).width() - $('#diverse_infos').position().left - $('#diverse_infos').width() > 200) {
