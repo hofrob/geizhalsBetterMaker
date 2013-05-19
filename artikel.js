@@ -109,6 +109,16 @@ $(function() {
 										width  : 100,
 										height : 100
 									}
+								},
+								thumbsLoaded: function() {
+									$('#fancybox-thumbs a').each(function(index, value) {
+										$(value).attr({
+											href: '#',
+											onClick: 'return false;'
+										}).click(function(e) {
+											$.fancybox.jumpto($(e.target).closest('li').index());
+										});
+									});
 								}
 							});
 

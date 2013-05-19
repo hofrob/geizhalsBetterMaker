@@ -1,6 +1,7 @@
 
 $(function() {
 	chrome.storage.sync.get(null, function(syncStorage) {
+
 		var tabs = syncStorage['tabs'],
 			allgemein = syncStorage['allgemein'],
 			favoriten = syncStorage['favoriten'],

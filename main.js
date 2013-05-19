@@ -144,7 +144,7 @@ function haendler_ausblenden() {
 							ausblendart = '(permanent)';
 						}
 
-								small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
+						small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
 						var td = $(document.createElement('td'))
 								.attr('colspan', '5')
 								.append(small),
