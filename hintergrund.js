@@ -33,7 +33,7 @@ function init_settings() {
 			chrome.storage.sync.set({favoriten: favoriten});
 		}
 
-		if(typeof haendler_ausblenden != 'object') {
+		if(!$.isPlainObject(haendler_ausblenden)) {
 			haendler_ausblenden = {};
 			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden});
 		}
