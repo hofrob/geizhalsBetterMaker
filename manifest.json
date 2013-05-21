@@ -28,8 +28,14 @@
 			"lib/jquery.powertip.min.js",
 			"main.js",
 			"kategorien.js",
+			"startseite.js",
 			"artikel.js",
 			"tabs.js"
+		],
+		"exclude_globs": [
+			"*://forum.geizhals.??",
+			"*://unternehmen.geizhals.??",
+			"*://geizhals.??/isp/*"
 		]
 	}],
 	"background": {
