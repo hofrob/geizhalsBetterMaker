@@ -232,6 +232,8 @@ $(function() {
 
 								tooltip_anhaengen(value, {richtung:'e'}, function(value) {
 
+									div_helper = $(document.createElement('div'));
+
 									if(value.attr('colspan') == 5)
 										return;
 
@@ -244,7 +246,13 @@ $(function() {
 										note = parseFloat(note.replace(/,/, '.')).toFixed(2).replace(/\./, ',');
 										a.append('<br>' + note + '/' + bewertungen);
 									}
-									return a;
+
+									div_helper.append(a);
+
+									if($('span.gh_stars', value).length)
+										div_helper.append('<br>amazon: ', $('span.gh_stars', value));
+
+									return div_helper.html();
 								});
 							});
 
@@ -257,7 +265,7 @@ $(function() {
 										return div;
 
 									var a = $(document.createElement('a'))
-											.html('Ausblenden')
+											.html('GHBM Optionen')
 											.attr({
 												href: '#',
 												onClick: 'return false;'
@@ -272,21 +280,49 @@ $(function() {
 										img_temp = $(document.createElement('img'))
 											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/entfernen.png')
 											.addClass('haendler_ausblenden_icon')
-											.attr('title', 'temp'),
-										img_perm = img_temp.clone().attr('title', 'perm');
+											.attr('data-ausblendart', 'temp'),
+										img_perm = img_temp.clone().attr('title', 'perm'),
+										img_temp_region = img_temp.clone().attr('data-ausblendart', 'temp_region'),
+										img_perm_region = img_temp.clone().attr('data-ausblendart', 'perm_region'),
+										img_temp_herv = $(document.createElement('img'))
+											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/hinzufuegen.png')
+											.addClass('haendler_hervorheben_icon')
+											.attr('data-ausblendart', 'temp'),
+										img_perm_herv = img_temp_herv.clone().attr('data-ausblendart', 'perm');
 
 									div_haendler_ausblenden
 											.addClass('haendler_ausblenden')
-											.append('<br>Händler ausblenden:<br>',
+											.append('<br>Händler hervorheben:<br>',
+													img_temp_herv, ' temporär (4h)<br>',
+													img_perm_herv, ' permanent<br>',
+													'Händler ausblenden:<br>',
 													img_temp, ' temporär (4h)<br>',
-													img_perm, ' permanent');
+													img_perm, ' permanent<br><br>Region ',
+													$('img:first', value).clone(), ' ausblenden:<br>',
+													img_temp_region, ' temporär (4h)<br>',
+													img_perm_region, ' permanent');
 
 									$('.haendler_ausblenden_icon', div_haendler_ausblenden).click(function(e) {
+
 										var haendlername = $('#powerTip a:first').text();
 
 										chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-											var haendler_ausblenden = syncStorage['haendler_ausblenden'];
-											if($(e.target).attr('title') == 'temp')
+
+											var haendler_ausblenden = syncStorage['haendler_ausblenden'],
+												region = $(e.target).attr('data-ausblendart').slice(-6) == 'region',
+												temp = $(e.target).attr('data-ausblendart').slice(0,4) == 'temp';
+
+											if(region && temp)
+												haendler_ausblenden[get_region($('img:first', value))] = {
+													region: true,
+													art: Date.now()
+												};
+											else if(region)
+												haendler_ausblenden[get_region($('img:first', value))] = {
+													region: true,
+													art: true
+												};
+											else if(temp)
 												haendler_ausblenden[haendlername] = Date.now();
 											else
 												haendler_ausblenden[haendlername] = true;

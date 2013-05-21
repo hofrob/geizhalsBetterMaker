@@ -1,22 +1,26 @@
 
-function get_region() {
+function get_region(img) {
 
-	if($('#gh_flags_search').children('img').length == 1) {
+	var aktive_flagge;
 
-		var aktive_flagge = $('#gh_flags_search').children('img').attr('src');
+	if(arguments.length == 1 && img.length == 1)
+		aktive_flagge = img.attr('src');
+	else if($('#gh_flags_search').children('img').length == 1)
+		aktive_flagge = $('#gh_flags_search').children('img').attr('src');
+	else
+		return 'eu';
 
-		if(/austria\.gif/.test(aktive_flagge))
-			return 'at';
+	if(/austria\.gif/.test(aktive_flagge) || /at\.png$/.test(aktive_flagge))
+		return 'at';
 
-		else if(/germany\.gif/.test(aktive_flagge))
-			return 'de';
+	else if(/germany\.gif/.test(aktive_flagge) || /de\.png$/.test(aktive_flagge))
+		return 'de';
 
-		else if(/UK\.gif/.test(aktive_flagge))
-			return 'uk';
+	else if(/UK\.gif/.test(aktive_flagge) || /uk\.png$/.test(aktive_flagge))
+		return 'uk';
 
-		else if(/pol\.gif/.test(aktive_flagge))
-			return 'pl';
-	}
+	else if(/pol\.gif/.test(aktive_flagge) || /pl\.png$/.test(aktive_flagge))
+		return 'pl';
 
 	// Fallback: EU
 	return 'eu';
@@ -102,9 +106,14 @@ function haendler_ausblenden() {
 
 		for(var haendlername in haendler_ausblenden) {
 			(function(haendlername) {
+				var region = typeof haendler_ausblenden[haendlername] == 'object',
+					art = region ? haendler_ausblenden[haendlername].art : haendler_ausblenden[haendlername];
 
 				$('#preistabs tr.t1, #preistabs tr.t2').each(function(index, value) {
-					if($('td:nth-child(2) a:first', value).text() == haendlername && !$(value).hasClass('haendler_ausblenden')) {
+
+					if(region && haendlername == get_region($('td:nth-child(2) img:first', value))
+							|| $('td:nth-child(2) a:first', value).text() == haendlername && !$(value).hasClass('haendler_ausblenden')) {
+
 						$(value).addClass('haendler_ausblenden');
 
 						var a = $(document.createElement('a'))
@@ -129,10 +138,10 @@ function haendler_ausblenden() {
 						var small = $(document.createElement('small'));
 
 						var ausblendart;
-						if(typeof haendler_ausblenden[haendlername] == 'number') {
+						if(typeof art == 'number') {
 
-							var bis = new Date(haendler_ausblenden[haendlername] + 4*60*60*1000);
-							var bis_string = ('0'+bis.getDate()).slice(-2) + '.' +
+							var bis = new Date(art + 4*60*60*1000),
+								bis_string = ('0'+bis.getDate()).slice(-2) + '.' +
 									('0'+(parseInt(bis.getMonth(), 10)+1)).slice(-2) + '.' +
 									bis.getFullYear() + ' ' +
 									('0'+bis.getHours()).slice(-2) + ':' +
@@ -144,7 +153,11 @@ function haendler_ausblenden() {
 							ausblendart = '(permanent)';
 						}
 
-						small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
+						if(region)
+							small.append('ausgeblendet: Region ', $('td:nth-child(2) img:first', value).clone().removeClass(), ' ' + ausblendart + ' ', a);
+						else
+							small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
+
 						var td = $(document.createElement('td'))
 								.attr('colspan', '5')
 								.append(small),

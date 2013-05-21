@@ -31,12 +31,23 @@ function restore_options() {
 			$('#usertabs').append(text);
 		});
 
-		for(var i in haendler_ausblenden) {
-			var text;
-			if(typeof haendler_ausblenden[i] == 'number')
-				text = '<option value="' + i + '">' + i + ' (noch ' + errechne_alter(new Date(haendler_ausblenden[i] + 4*60*60*1000)) + ')</option>';
+		for(var haendlername in haendler_ausblenden) {
+			var text,
+				art,
+				haendlername_liste = '';
+
+			if(typeof haendler_ausblenden[haendlername] == 'object') {
+				art = haendler_ausblenden[haendlername].art;
+				haendlername_liste = 'Region ' + haendlername.toUpperCase();
+			} else {
+				art = haendler_ausblenden[haendlername];
+				haendlername_liste = haendlername;
+			}
+
+			if(typeof art == 'number')
+				text = '<option value="' + haendlername + '">' + haendlername_liste + ' (noch ' + errechne_alter(new Date(art + 4*60*60*1000)) + ')</option>';
 			else
-				text = '<option value="' + i + '">' + i + ' (permanent)</option>';
+				text = '<option value="' + haendlername + '">' + haendlername_liste + ' (permanent)</option>';
 
 			$('#haendler').append(text);
 		}

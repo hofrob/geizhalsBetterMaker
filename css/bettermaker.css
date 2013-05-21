@@ -102,7 +102,7 @@
 	display: none;
 }
 
-.haendler_ausblenden_icon {
+.haendler_ausblenden_icon, .haendler_hervorheben_icon {
 	vertical-align: middle;
 	cursor: pointer;
 }
@@ -111,4 +111,8 @@
 	float: left;
 	overflow: visible;
 	width: 0;
+}
+
+.gh_hl1 a:nth-child(3) {
+	color: #903;
 }

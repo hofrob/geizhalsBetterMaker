@@ -11,6 +11,7 @@ function notify(request) {
 			chrome.tabs.executeScript(tab.id, {
 				code: 'function tab_aktivieren() { return ' + request.tab_id + ' }'
 			});
+			chrome.windows.update(tab.windowId, {focused: true});
 		});
 		this.close();
 	};
@@ -21,7 +22,7 @@ function init_settings() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var preisagenten = syncStorage['preisagenten'],
 			favoriten = syncStorage['favoriten'],
-			haendler_ausblenden = syncStorage['haendler_ausblenden'];
+			haendler = syncStorage['haendler'];
 
 		if(typeof preisagenten != 'object') {
 			preisagenten = {};
@@ -33,9 +34,9 @@ function init_settings() {
 			chrome.storage.sync.set({favoriten: favoriten});
 		}
 
-		if(typeof haendler_ausblenden != 'object') {
-			haendler_ausblenden = {};
-			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden});
+		if(!$.isArray(haendler)) {
+			haendler = [];
+			chrome.storage.sync.set({haendler: haendler});
 		}
 	});
 }
@@ -49,7 +50,7 @@ function check_preisagenten() {
 
 		var preisagenten = syncStorage['preisagenten'],
 			tabs = syncStorage['tabs'],
-			haendler_ausblenden = syncStorage['haendler_ausblenden'];
+			haendler = syncStorage['haendler'];
 
 		if(!$.isEmptyObject(preisagenten)) {
 			for(var i in preisagenten) {
@@ -76,7 +77,7 @@ function check_preisagenten() {
 									bestpreis;
 
 								for(var j = 0; j < zeilen.length; j++) {
-									if(haendler_ausblenden[$('td:nth-child(2) a:first', zeilen[j]).text()])
+									if(haendler[$('td:nth-child(2) a:first', zeilen[j]).text()])
 										continue;
 									bestpreis = zeilen[j];
 									break;
@@ -84,20 +85,20 @@ function check_preisagenten() {
 
 								var preis_span = $('span.price', bestpreis),
 									preis,
-									haendler;
+									haendlername;
 
 								if(preis_span.length) {
 									preis = parseInt(preis_span.text().replace(/,/, '').replace(/\-\-/, '00'), 10);
-									haendler = $('td:nth-child(2) a:first', bestpreis).text();
+									haendlername = $('td:nth-child(2) a:first', bestpreis).text();
 								} else {
 									preis = '--';
-									haendler = '--';
+									haendlername = '--';
 								}
 
 								chrome.storage.sync.get('preisagenten', function(syncStorage) {
 									var preisagenten = syncStorage['preisagenten'];
 									preisagenten[i].preis = preis;
-									preisagenten[i].haendler = haendler;
+									preisagenten[i].haendler = haendlername;
 									preisagenten[i].uhrzeit = Date.now();
 									chrome.storage.sync.set({preisagenten: preisagenten});
 								});
@@ -110,7 +111,7 @@ function check_preisagenten() {
 										text = 'Kein Preis mehr gefunden im Tab "' + tabs[tab_id].tabname + '".\n\
 											Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler + ')';
 									} else if(typeof preisagenten[i].preis != 'number') {
-										text = 'Preis gefunden im Tab "' + tabs[tab_id].tabname + '": € ' + preis/100 + ' (' + haendler + ')';
+										text = 'Preis gefunden im Tab "' + tabs[tab_id].tabname + '": € ' + preis/100 + ' (' + haendlername + ')';
 									} else {
 										var differenz = Math.abs((preisagenten[i].preis - preis))/100,
 											aenderung;
@@ -122,7 +123,7 @@ function check_preisagenten() {
 
 										text = 'Preis ist im Tab "' + tabs[tab_id].tabname + '" um € ' + differenz + aenderung +
 												'. Vorher: € ' + preisagenten[i].preis/100 + ' (' + preisagenten[i].haendler +
-												') Nachher: € ' + preis/100 + ' (' + haendler + ')';
+												') Nachher: € ' + preis/100 + ' (' + haendlername + ')';
 									}
 
 									notify({
@@ -144,21 +145,29 @@ function check_preisagenten() {
 }
 
 function haendler_einblenden_check() {
-	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'],
+	chrome.storage.sync.get('haendler', function(syncStorage) {
+		var haendler = syncStorage['haendler'],
 			aenderung = false;
 
-		for(var haendlername in haendler_ausblenden) {
-			if(typeof haendler_ausblenden[haendlername] == 'number' && Date.now()-4*60*60*1000 > haendler_ausblenden[haendlername]) {
-				delete haendler_ausblenden[haendlername];
+		for(var haendlername in haendler) {
+
+			var art;
+
+			if(typeof haendler[haendlername] == 'object')
+				art = haendler[haendlername].art;
+			else
+				art = haendler[haendlername];
+
+			if(typeof art == 'number' && Date.now()-4*60*60*1000 > art) {
+				delete haendler[haendlername];
 				aenderung = true;
 			}
 		}
 
-		if(aenderung) {
-			chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
-			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden});
-		}
+		if(aenderung)
+			chrome.storage.sync.set({haendler: haendler}, function() {
+				chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
+			});
 	});
 }
 
