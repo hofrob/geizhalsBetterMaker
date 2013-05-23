@@ -22,7 +22,8 @@ function init_settings() {
 	chrome.storage.sync.get(null, function(syncStorage) {
 		var preisagenten = syncStorage['preisagenten'],
 			favoriten = syncStorage['favoriten'],
-			haendler = syncStorage['haendler'];
+			haendler = syncStorage['haendler'],
+			haendler_ausblenden = syncStorage['haendler_ausblenden'];
 
 		if(typeof preisagenten != 'object') {
 			preisagenten = {};
@@ -37,6 +38,29 @@ function init_settings() {
 		if(!$.isArray(haendler)) {
 			haendler = [];
 			chrome.storage.sync.set({haendler: haendler});
+		}
+
+		if(typeof haendler_ausblenden == 'object') {
+			for(var haendlername in haendler_ausblenden) {
+				if(typeof haendler_ausblenden[haendlername] == 'number') {
+					haendler.push({
+						name: haendlername,
+						temp: true,
+						typ: 2,
+						zeit: haendler_ausblenden[haendlername]
+					});
+				} else {
+					haendler.push({
+						name: haendlername,
+						temp: false,
+						typ: 2,
+						zeit: Date.now()
+					});
+				}
+			}
+
+			chrome.storage.sync.set({haendler: haendler});
+			chrome.storage.sync.remove('haendler_ausblenden');
 		}
 	});
 }
