@@ -102,7 +102,11 @@
 	display: none;
 }
 
-.haendler_ausblenden_icon, .haendler_hervorheben_icon {
+.haendler_hervorheben {
+	background-color: peachpuff !important;
+}
+
+.haendler_bearbeiten_icon {
 	vertical-align: middle;
 	cursor: pointer;
 }

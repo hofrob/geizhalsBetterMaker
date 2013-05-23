@@ -1,3 +1,11 @@
+function datum_string(date) {
+	return ('0'+date.getDate()).slice(-2) + '.' +
+			('0'+(parseInt(date.getMonth(), 10)+1)).slice(-2) + '.' +
+			date.getFullYear() + ' ' +
+			('0'+date.getHours()).slice(-2) + ':' +
+			('0'+date.getMinutes()).slice(-2) + ':' +
+			('0'+date.getSeconds()).slice(-2);
+}
 
 function get_region(img) {
 
@@ -99,93 +107,89 @@ function errechne_alter(datum_string) {
 		return Math.floor(alter/60) + 'h' + alter % 60;
 }
 
-function haendler_ausblenden() {
+function zeilen_einausblenden() {
 
-	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+	chrome.storage.sync.get('haendler', function(syncStorage) {
 
-		for(var haendlername in haendler_ausblenden) {
-			(function(haendlername) {
-				var region = typeof haendler_ausblenden[haendlername] == 'object',
-					art = region ? haendler_ausblenden[haendlername].art : haendler_ausblenden[haendlername];
+		var haendler = syncStorage['haendler'];
 
-				$('#preistabs tr.t1, #preistabs tr.t2').each(function(index, value) {
+		$('#preistabs tr.t1, #preistabs tr.t2').each(function(index, value) {
 
-					if(region && haendlername == get_region($('td:nth-child(2) img:first', value))
-							|| $('td:nth-child(2) a:first', value).text() == haendlername && !$(value).hasClass('haendler_ausblenden')) {
+			var haendlername = $('td:nth-child(2) a:first', value).text(),
+				region = get_region($('td:nth-child(2) img:first', value)),
+				h = $.grep(haendler, function(e) {
+						return e.name == haendlername && e.typ < 3;
+					}),
+				r = $.grep(haendler, function(e) {
+						return e.name == region && e.typ == 3;
+					}),
+				ausblendtext = ['ausgeblendet:'];
 
-						$(value).addClass('haendler_ausblenden');
-
-						var a = $(document.createElement('a'))
-								.html('einblenden')
-								.attr({
-									href: '#',
-									onClick: 'return false;',
-									title: haendlername
-								})
-								.click(function(e) {
-									chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-
-										var haendler_ausblenden = syncStorage['haendler_ausblenden'];
-										delete haendler_ausblenden[$(e.target).attr('title')];
-
-										chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden}, function() {
-											chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
-										});
-									});
-								});
-
-						var small = $(document.createElement('small'));
-
-						var ausblendart;
-						if(typeof art == 'number') {
-
-							var bis = new Date(art + 4*60*60*1000),
-								bis_string = ('0'+bis.getDate()).slice(-2) + '.' +
-									('0'+(parseInt(bis.getMonth(), 10)+1)).slice(-2) + '.' +
-									bis.getFullYear() + ' ' +
-									('0'+bis.getHours()).slice(-2) + ':' +
-									('0'+bis.getMinutes()).slice(-2) + ':' +
-									('0'+bis.getSeconds()).slice(-2);
-
-							ausblendart = '(noch <span title="' + bis_string + '">' + errechne_alter(new Date(bis)) + '</span>)';
-						} else {
-							ausblendart = '(permanent)';
-						}
-
-						if(region)
-							small.append('ausgeblendet: Region ', $('td:nth-child(2) img:first', value).clone().removeClass(), ' ' + ausblendart + ' ', a);
-						else
-							small.append('ausgeblendet: ' + haendlername + ' ' + ausblendart + ' ', a);
-
-						var td = $(document.createElement('td'))
-								.attr('colspan', '5')
-								.append(small),
-							tr = $(document.createElement('tr'))
-								.html(td)
-								.css('border', '1px solid black');
-
-						$(value).after(tr);
-					}
-				});
-			})(haendlername);
-		}
-	});
-}
-
-function haendler_einblenden() {
-	chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
-
-		for(var i = 0; i < 6; i++) {
-			$('#preistab_inhalt' + i + ' tr.t1, #preistab_inhalt' + i + ' tr.t2').each(function(index, value) {
-				if(typeof haendler_ausblenden[$('td:nth-child(2) a:first', value).text()] == 'undefined'
-						&& $(value).hasClass('haendler_ausblenden')) {
-
+			if(h.length == 0 && r.length == 0) {
+				if($(value).hasClass('haendler_ausblenden'))
 					$(value).removeClass('haendler_ausblenden').next().remove();
-				}
+				else if($(value).hasClass('haendler_hervorheben'))
+					$(value).removeClass('haendler_hervorheben');
+				return;
+			}
 
-			});
-		}
+			if(h.length && h[0].typ == 1) {
+
+				if($(value).hasClass('haendler_ausblenden'))
+					$(value).removeClass('haendler_ausblenden').next().remove();
+
+				$(value).addClass('haendler_hervorheben');
+				return;
+			}
+
+			if(h.length) {
+				ausblendtext.push(h[0].name);
+				if(h[0].temp) {
+					var bis = new Date(h[0].zeit + 4*60*60*1000),
+						span = $(document.createElement('span'))
+								.attr('title', datum_string(bis))
+								.addClass('ghbm_zeit')
+								.html(errechne_alter(bis));
+
+					ausblendtext.push('(noch ' + span[0].outerHTML + ')');
+				} else {
+					ausblendtext.push('(seit ' + datum_string(new Date(h[0].zeit)).slice(0,10) + ')');
+				}
+			}
+
+			if(r.length) {
+				if(h.length == 0)
+					ausblendtext.push(haendlername);
+
+				ausblendtext.push('Region ' + r[0].name.toUpperCase());
+
+				if(r[0].temp) {
+					var bis = new Date(r[0].zeit + 4*60*60*1000),
+						span = $(document.createElement('span'))
+								.attr('title', datum_string(bis))
+								.addClass('ghbm_zeit')
+								.html(errechne_alter(bis));
+
+					ausblendtext.push('(noch ' + span[0].outerHTML + ')');
+				} else {
+					ausblendtext.push('(seit ' + datum_string(new Date(r[0].zeit)).slice(0,10) + ')');
+				}
+			}
+
+			if(h.length || r.length) {
+				var small = $(document.createElement('small')).append(ausblendtext.join(' ')),
+					td = $(document.createElement('td'))
+						.attr('colspan', '5')
+						.append(small),
+					tr = $(document.createElement('tr'))
+						.append(td)
+						.css('border', '1px solid black');
+
+				if($(value).hasClass('haendler_ausblenden'))
+					$(value).next().html(td);
+				else
+					$(value).addClass('haendler_ausblenden').after(tr);
+			}
+		});
 	});
 }

@@ -11,7 +11,7 @@ function restore_options() {
 		var tabs = syncStorage['tabs'];
 		var allgemein = syncStorage['allgemein'];
 		var standard_tab = syncStorage['standard_tab'];
-		var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+		var haendler = syncStorage['haendler'];
 
 		if(tabs && tabs.length >= 6)
 			$('#usertabs').closest('form').prop('disabled', true).css('color', '#707070');
@@ -31,30 +31,28 @@ function restore_options() {
 			$('#usertabs').append(text);
 		});
 
-		for(var haendlername in haendler_ausblenden) {
+		for(var i = 0; i < haendler.length; i++) {
 			var text,
-				art,
+				zeit = haendler[i].zeit,
 				haendlername_liste = '';
 
-			if(typeof haendler_ausblenden[haendlername] == 'object') {
-				art = haendler_ausblenden[haendlername].art;
-				haendlername_liste = 'Region ' + haendlername.toUpperCase();
-			} else {
-				art = haendler_ausblenden[haendlername];
-				haendlername_liste = haendlername;
-			}
-
-			if(typeof art == 'number')
-				text = '<option value="' + haendlername + '">' + haendlername_liste + ' (noch ' + errechne_alter(new Date(art + 4*60*60*1000)) + ')</option>';
+			if(haendler[i].typ == 3)
+				haendlername_liste = 'Region ' + haendler[i].name.toUpperCase();
+			else if(haendler[i].typ == 2)
+				haendlername_liste = 'ausgeblendet: ' + haendler[i].name;
 			else
-				text = '<option value="' + haendlername + '">' + haendlername_liste + ' (permanent)</option>';
+				haendlername_liste = 'hervorgehoben: ' + haendler[i].name;
+
+			if(haendler[i].temp)
+				text = '<option value="' + i + '">' + haendlername_liste + ' (noch ' + errechne_alter(new Date(zeit + 4*60*60*1000)) + ')</option>';
+			else
+				text = '<option value="' + i + '">' + haendlername_liste + ' (seit ' + datum_string(new Date(zeit)) + ')</option>';
 
 			$('#haendler').append(text);
 		}
 
-		cb = Object.keys(allgemein);
-		for(var i=0; i < cb.length; i++)
-			$('#' + cb[i]).prop('checked', allgemein[cb[i]]);
+		for(var i in allgemein)
+			$('#' + i).prop('checked', allgemein[i]);
 
 	});
 	chrome.storage.local.get(null, function(syncStorage) {
@@ -122,9 +120,9 @@ $(function() {
 		var allgemein = {},
 			cb = $('#allgemein > [type=checkbox]');
 
-		for(var i=0; i < cb.length; i++) {
+		for(var i=0; i < cb.length; i++)
 			allgemein[$(cb[i]).context.id] = $(cb[i]).prop('checked');
-		}
+
 		chrome.storage.sync.set({allgemein: allgemein});
 	});
 
@@ -225,14 +223,14 @@ $(function() {
 			return;
 		}
 
-		chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
-			var haendler_ausblenden = syncStorage['haendler_ausblenden'];
+		chrome.storage.sync.get('haendler', function(syncStorage) {
+			var haendler = syncStorage['haendler'];
 
 			for(var i = 0; i < haendler_entfernen.length; i++)
-				delete haendler_ausblenden[haendler_entfernen[i]];
+				delete haendler[haendler_entfernen[i]];
 
-			chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden}, function() {
-				chrome.runtime.sendMessage({typ: 'haendler_einblenden'});
+			chrome.storage.sync.set({haendler: haendler}, function() {
+				chrome.runtime.sendMessage({typ: 'zeilen_einausblenden'});
 			});
 			restore_options();
 		});

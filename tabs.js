@@ -114,7 +114,7 @@ $(function() {
 						$('#gh_afilterbox, #content_table, #gh_content_wrapper > h3, #gh_content_wrapper > div.blaettern', data)
 								.appendTo('#preistab_inhalt' + i);
 
-						chrome.runtime.sendMessage({typ: 'haendler_ausblenden'});
+						zeilen_einausblenden();
 
 						if(tabs[i].filterbox_ausblenden)
 							$('#preistab_inhalt' + i + ' #gh_afilterbox').hide();
@@ -163,17 +163,9 @@ $(function() {
 						if(tabs[i].preisfeld_ausmisten && tabs[i].beschreibungstext_kuerzen) {
 							var preis_von = [];
 							setInterval(function() {
-								$('#preistab_inhalt' + i + ' #content_table tr').find('td:first small:first').each(function(index, value) {
-									var alter;
-									if($('span', value).length) {
-										alter = errechne_alter($('span', value).attr('title'));
-										$('span', value).html(alter);
-									} else if($(value).attr('title')) {
-										alter = errechne_alter($(value).attr('title'));
-										$(value).html(alter);
-									}
+								$('.ghbm_zeit').each(function(index, value) {
+									$(value).html(errechne_alter($(value).attr('title')));
 								});
-								haendler_einblenden();
 							}, 60*1000);
 						}
 
@@ -190,7 +182,8 @@ $(function() {
 											alter = errechne_alter(datum),
 											small = $(document.createElement('small'))
 												.html(alter)
-												.attr('title', datum);
+												.attr('title', datum)
+												.addClass('ghbm_zeit');
 
 										preis_von.push(small[0].outerHTML);
 
@@ -277,58 +270,67 @@ $(function() {
 									$('.gh_hl1', div).append(' ', a);
 
 									var div_haendler_ausblenden = $(document.createElement('div')),
-										img_temp = $(document.createElement('img'))
-											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/entfernen.png')
-											.addClass('haendler_ausblenden_icon')
-											.attr('data-ausblendart', 'temp'),
-										img_perm = img_temp.clone().attr('title', 'perm'),
-										img_temp_region = img_temp.clone().attr('data-ausblendart', 'temp_region'),
-										img_perm_region = img_temp.clone().attr('data-ausblendart', 'perm_region'),
 										img_temp_herv = $(document.createElement('img'))
 											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/hinzufuegen.png')
-											.addClass('haendler_hervorheben_icon')
-											.attr('data-ausblendart', 'temp'),
-										img_perm_herv = img_temp_herv.clone().attr('data-ausblendart', 'perm');
+											.addClass('haendler_bearbeiten_icon')
+											.attr('data-ausblendart', 't_1'),
+										img_perm_herv = img_temp_herv.clone().attr('data-ausblendart', 'p_1'),
+										img_temp_haen = $(document.createElement('img'))
+											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/entfernen.png')
+											.addClass('haendler_bearbeiten_icon')
+											.attr('data-ausblendart', 't_2'),
+										img_perm_haen = img_temp_haen.clone().attr('data-ausblendart', 'p_2'),
+										img_temp_region = img_temp_haen.clone().attr('data-ausblendart', 't_3'),
+										img_perm_region = img_temp_haen.clone().attr('data-ausblendart', 'p_3');
 
 									div_haendler_ausblenden
 											.addClass('haendler_ausblenden')
 											.append('<br>Händler hervorheben:<br>',
 													img_temp_herv, ' temporär (4h)<br>',
 													img_perm_herv, ' permanent<br>',
-													'Händler ausblenden:<br>',
-													img_temp, ' temporär (4h)<br>',
-													img_perm, ' permanent<br><br>Region ',
-													$('img:first', value).clone(), ' ausblenden:<br>',
+													'<br>Händler ausblenden:<br>',
+													img_temp_haen, ' temporär (4h)<br>',
+													img_perm_haen, ' permanent<br>',
+													'<br>Region ', $('img:first', value).clone(), ' ausblenden:<br>',
 													img_temp_region, ' temporär (4h)<br>',
 													img_perm_region, ' permanent');
 
-									$('.haendler_ausblenden_icon', div_haendler_ausblenden).click(function(e) {
+									$('.haendler_bearbeiten_icon', div_haendler_ausblenden).click(function(e) {
+
+										$.powerTip.hide();
 
 										var haendlername = $('#powerTip a:first').text();
 
-										chrome.storage.sync.get('haendler_ausblenden', function(syncStorage) {
+										chrome.storage.sync.get('haendler', function(syncStorage) {
 
-											var haendler_ausblenden = syncStorage['haendler_ausblenden'],
-												region = $(e.target).attr('data-ausblendart').slice(-6) == 'region',
-												temp = $(e.target).attr('data-ausblendart').slice(0,4) == 'temp';
+											var haendler = syncStorage['haendler'];
+												art = $(e.target).attr('data-ausblendart').split('_'),
+												temp = art[0] == 't',
+												typ = parseInt(art[1], 10),
+												name = art[1] == 3 ? get_region($('img:first', value)) : haendlername,
+												eintrag = $.grep(haendler, function(e) {
+													return e.name == name && (typ == 3 && e.typ == 3 || typ < 3 && e.typ < 3);
+												});
 
-											if(region && temp)
-												haendler_ausblenden[get_region($('img:first', value))] = {
-													region: true,
-													art: Date.now()
-												};
-											else if(region)
-												haendler_ausblenden[get_region($('img:first', value))] = {
-													region: true,
-													art: true
-												};
-											else if(temp)
-												haendler_ausblenden[haendlername] = Date.now();
-											else
-												haendler_ausblenden[haendlername] = true;
+											if(eintrag.length) {
+												eintrag[0].temp = temp;
+												eintrag[0].typ = typ;
+												eintrag[0].zeit = Date.now();
+												haendler = $.grep(haendler, function(e) {
+													return e.name == name && (typ == 3 && e.typ == 3 || typ < 3 && e.typ < 3);
+												}, true);
+												haendler.push(eintrag[0]);
+											} else {
+												haendler.push({
+													name: name,
+													temp: temp,
+													typ: typ,
+													zeit: Date.now()
+												});
+											}
 
-											chrome.storage.sync.set({haendler_ausblenden: haendler_ausblenden}, function() {
-												chrome.runtime.sendMessage({typ: 'haendler_ausblenden'});
+											chrome.storage.sync.set({haendler: haendler}, function() {
+												chrome.runtime.sendMessage({typ: 'zeilen_einausblenden'});
 											});
 										});
 									});
