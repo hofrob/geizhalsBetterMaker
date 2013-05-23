@@ -200,7 +200,7 @@ function zeilen_check() {
 }
 
 chrome.alarms.onAlarm.addListener(function(alarm) {
-	if(alarm.name == 'preisagent_check') {
+	if(alarm.name == 'check_preisagenten') {
 		check_preisagenten();
 	} else if(alarm.name == 'zeilen_check') {
 		zeilen_check();
@@ -252,7 +252,7 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 	}
 });
 
-chrome.alarms.create('preisagent_check', {
+chrome.alarms.create('check_preisagenten', {
 	delayInMinutes: 2,
 	periodInMinutes: 10
 });
