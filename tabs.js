@@ -271,12 +271,12 @@ $(function() {
 
 									var div_haendler_ausblenden = $(document.createElement('div')),
 										img_temp_herv = $(document.createElement('img'))
-											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/hinzufuegen.png')
+											.attr('src', chrome.extension.getURL('img/hinzufuegen.png'))
 											.addClass('haendler_bearbeiten_icon')
 											.attr('data-ausblendart', 't_1'),
 										img_perm_herv = img_temp_herv.clone().attr('data-ausblendart', 'p_1'),
 										img_temp_haen = $(document.createElement('img'))
-											.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/entfernen.png')
+											.attr('src', chrome.extension.getURL('img/entfernen.png'))
 											.addClass('haendler_bearbeiten_icon')
 											.attr('data-ausblendart', 't_2'),
 										img_perm_haen = img_temp_haen.clone().attr('data-ausblendart', 'p_2'),

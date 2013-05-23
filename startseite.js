@@ -9,7 +9,7 @@ $(function() {
 			favoriten = syncStorage['favoriten'],
 			preisagenten = syncStorage['preisagenten'],
 			img = $(document.createElement('img'))
-				.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/preisagent_16.png')
+				.attr('src', chrome.extension.getURL('img/preisagent_16.png'))
 				.css('vertical-align', 'middle'),
 			divh = $(document.createElement('div')).addClass('ghinfoboxh').append(img, ' Preisagenten'),
 			div = $(document.createElement('div')).addClass('ghinfobox').append(divh);
@@ -29,7 +29,7 @@ $(function() {
 								});
 							}),
 				img = $(document.createElement('img'))
-					.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/preisagent_on.png')
+					.attr('src', chrome.extension.getURL('img/preisagent_on.png'))
 					.css('vertical-align', 'middle');
 
 
@@ -84,7 +84,7 @@ $(function() {
 			divh = $(document.createElement('div')).addClass('ghinfoboxh');
 
 		var img = $(document.createElement('img'))
-				.attr('src', 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/img/stern_hell.png')
+				.attr('src', chrome.extension.getURL('img/stern_hell.png'))
 				.css('vertical-align', 'middle');
 
 		divh.append(img, ' Favoriten');

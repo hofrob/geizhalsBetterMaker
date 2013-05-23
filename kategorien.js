@@ -53,7 +53,7 @@ $(function() {
 
 			$('#kat_suche').focus(function() {
 				$.ajax({
-					url: 'chrome-extension://daefgmcpnmbecchplnffpgpjbcoppcne/kategorien.json',
+					url: chrome.extension.getURL('kategorien.json'),
 					dataType: 'json',
 					success: function(data) {
 						$('#kat_suche').autocomplete({
