@@ -107,9 +107,16 @@ function check_preisagenten() {
 								for(var j = 0; j < zeilen.length; j++) {
 									var region = get_region($('td:nth-child(2) img:first', zeilen[j]).attr('data-imgsrc')),
 										haendlername = $('td:nth-child(2) a:first', zeilen[j]).text(),
+										haendler_hervorgehoben = 0 < $.grep(haendler, function(e) {
+																		return haendlername == e.name && e.typ == 1;
+																	}).length,
+										ignore = false;
+
+									if(!haendler_hervorgehoben)
 										ignore = 0 < $.grep(haendler, function(e) {
 														return region == e.name && e.typ == 3 || haendlername == e.name && e.typ == 2;
 													}).length;
+
 									if(ignore)
 										continue;
 									bestpreis = zeilen[j];
