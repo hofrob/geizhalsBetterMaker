@@ -7,12 +7,12 @@ function datum_string(date) {
 			('0'+date.getSeconds()).slice(-2);
 }
 
-function get_region(img) {
+function get_region(src) {
 
 	var aktive_flagge;
 
-	if(arguments.length == 1 && img.length == 1)
-		aktive_flagge = img.attr('src');
+	if(arguments.length == 1)
+		aktive_flagge = src;
 	else if($('#gh_flags_search').children('img').length == 1)
 		aktive_flagge = $('#gh_flags_search').children('img').attr('src');
 	else
@@ -116,7 +116,7 @@ function zeilen_einausblenden() {
 		$('#preistabs tr.t1, #preistabs tr.t2').each(function(index, value) {
 
 			var haendlername = $('td:nth-child(2) a:first', value).text(),
-				region = get_region($('td:nth-child(2) img:first', value)),
+				region = get_region($('td:nth-child(2) img:first', value).attr('src')),
 				h = $.grep(haendler, function(e) {
 						return e.name == haendlername && e.typ < 3;
 					}),

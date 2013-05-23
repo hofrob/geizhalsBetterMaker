@@ -307,7 +307,7 @@ $(function() {
 												art = $(e.target).attr('data-ausblendart').split('_'),
 												temp = art[0] == 't',
 												typ = parseInt(art[1], 10),
-												name = art[1] == 3 ? get_region($('img:first', value)) : haendlername,
+												name = art[1] == 3 ? get_region($('img:first', value).attr('src')) : haendlername,
 												eintrag = $.grep(haendler, function(e) {
 													return e.name == name && (typ == 3 && e.typ == 3 || typ < 3 && e.typ < 3);
 												});

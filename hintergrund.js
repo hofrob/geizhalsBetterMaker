@@ -98,17 +98,18 @@ function check_preisagenten() {
 							dataType: 'html',
 							cache: false,
 							dataFilter: function(data) {
-								return data.replace(/<img\b[^>]*>/ig, '');
+								return data.replace(/src([^\s]*)/ig, 'data-imgsrc$1');
 							},
 							success: function(data) {
-
 								var zeilen = $('#content_table tr.t1, #content_table tr.t2', data),
 									bestpreis;
 
 								for(var j = 0; j < zeilen.length; j++) {
-									var ignore = 0 < $.grep(haendler, function(e) {
-										return $('td:nth-child(2) a:first', zeilen[j]).text() == e.name && e.typ > 1;
-									}).length;
+									var region = get_region($('td:nth-child(2) img:first', zeilen[j]).attr('data-imgsrc')),
+										haendlername = $('td:nth-child(2) a:first', zeilen[j]).text(),
+										ignore = 0 < $.grep(haendler, function(e) {
+														return region == e.name && e.typ == 3 || haendlername == e.name && e.typ == 2;
+													}).length;
 									if(ignore)
 										continue;
 									bestpreis = zeilen[j];
