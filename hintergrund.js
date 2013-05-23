@@ -23,7 +23,12 @@ function init_settings() {
 		var preisagenten = syncStorage['preisagenten'],
 			favoriten = syncStorage['favoriten'],
 			haendler = syncStorage['haendler'],
-			haendler_ausblenden = syncStorage['haendler_ausblenden'];
+			haendler_ausblenden = syncStorage['haendler_ausblenden'],
+			allgemein = syncStorage['allgemein'];
+
+		if(typeof allgemein == 'undefined') {
+			chrome.storage.sync.set({allgemein: {}});
+		}
 
 		if(typeof preisagenten != 'object') {
 			preisagenten = {};
