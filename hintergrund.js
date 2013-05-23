@@ -101,7 +101,10 @@ function check_preisagenten() {
 									bestpreis;
 
 								for(var j = 0; j < zeilen.length; j++) {
-									if(haendler[$('td:nth-child(2) a:first', zeilen[j]).text()])
+									var ignore = 0 < $.grep(haendler, function(e) {
+										return $('td:nth-child(2) a:first', zeilen[j]).text() == e.name && e.typ > 1;
+									}).length;
+									if(ignore)
 										continue;
 									bestpreis = zeilen[j];
 									break;
