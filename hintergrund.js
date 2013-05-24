@@ -24,7 +24,32 @@ function init_settings() {
 			favoriten = syncStorage['favoriten'],
 			haendler = syncStorage['haendler'],
 			haendler_ausblenden = syncStorage['haendler_ausblenden'],
-			allgemein = syncStorage['allgemein'];
+			allgemein = syncStorage['allgemein'],
+			tabs = syncStorage['tabs'];
+
+		if(typeof tabs == 'undefined') {
+			var tabs = [],
+				newtab = {
+					beschreibungstext_kuerzen: true,
+					bewertungsinfo_kuerzen: true,
+					bezugsart: "keine",
+					filterbox_ausblenden: true,
+					haendlerlink_kuerzen: true,
+					info_agb_link_ausblenden: true,
+					kreditkartenlogos_ausblenden: true,
+					lagerstand_kuerzen: true,
+					preis_vom_zeitdifferenz: true,
+					preisfeld_ausmisten: true,
+					spaltenueberschriften_ausblenden: true,
+					tabname: "Alles",
+					verfuegbarkeit: "beliebig",
+					vkinfo_ausblenden: true
+				};
+
+			tabs.push(newtab);
+			chrome.storage.sync.set({tabs: tabs});
+			chrome.storage.sync.set({standard_tab: 0});
+		}
 
 		if(typeof allgemein == 'undefined') {
 			allgemein = {
