@@ -27,6 +27,15 @@ function init_settings() {
 			allgemein = syncStorage['allgemein'];
 
 		if(typeof allgemein == 'undefined') {
+			allgemein = {
+				bilder_gallerie: true,
+				produktbeschreibung_verschoenern: true,
+				zusatzinfos_ausblenden: true,
+				immer_tabs_laden: false,
+				kategorie_suchfeld: true,
+				kategoriesuchbox_ausblenden: false,
+				kategoriefilter_ausblenden: false
+			};
 			chrome.storage.sync.set({allgemein: {}});
 		}
 
