@@ -27,7 +27,7 @@ function init_settings() {
 			allgemein = syncStorage['allgemein'],
 			tabs = syncStorage['tabs'];
 
-		if(typeof tabs == 'undefined') {
+		if(!$.isArray(tabs)) {
 			var tabs = [],
 				newtab = {
 					beschreibungstext_kuerzen: true,
