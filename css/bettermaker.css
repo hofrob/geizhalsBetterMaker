@@ -36,7 +36,7 @@
 	background-image: url('chrome-extension://__MSG_@@extension_id__/img/preisagent_off.png');
 }
 
-#preistabs tr.t1 td:nth-child(1) {
+#preistabs tr.t1 td:nth-child(1),#preistabs tr.t2 td:nth-child(1) {
 	width: 70px;
 }
 
@@ -119,4 +119,10 @@
 
 .gh_hl1 a:nth-child(3) {
 	color: #903;
+}
+
+#endloser_geizhals {
+	text-align: center;
+	height: 40px;
+	width: 100%;
 }
