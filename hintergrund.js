@@ -36,7 +36,7 @@ function init_settings() {
 				kategoriesuchbox_ausblenden: false,
 				kategoriefilter_ausblenden: false
 			};
-			chrome.storage.sync.set({allgemein: {}});
+			chrome.storage.sync.set({allgemein: allgemein});
 		}
 
 		if(typeof preisagenten != 'object') {
