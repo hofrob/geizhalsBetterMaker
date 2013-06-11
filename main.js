@@ -157,7 +157,7 @@ function zeilen_einausblenden() {
 				}
 			}
 
-			if(r.length) {
+			if(get_region() == 'eu' && r.length) {
 				if(h.length == 0)
 					ausblendtext.push(haendlername);
 
@@ -176,7 +176,7 @@ function zeilen_einausblenden() {
 				}
 			}
 
-			if(h.length || r.length) {
+			if(h.length || get_region() == 'eu' && r.length) {
 				var small = $(document.createElement('small')).append(ausblendtext.join(' ')),
 					td = $(document.createElement('td'))
 						.attr('colspan', '5')
