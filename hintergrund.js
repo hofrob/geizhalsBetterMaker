@@ -211,7 +211,7 @@ function check_preisagenten() {
 								}
 							}
 						});
-					}, Math.floor(Math.random()*60*1000));
+					}, Math.floor(Math.random()*10*60*1000));
 				}(i));
 			}
 		}
@@ -288,7 +288,7 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
 
 chrome.alarms.create('check_preisagenten', {
 	delayInMinutes: 2,
-	periodInMinutes: 10
+	periodInMinutes: 180
 });
 
 chrome.alarms.create('zeilen_check', {
